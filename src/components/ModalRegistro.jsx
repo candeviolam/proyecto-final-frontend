@@ -62,8 +62,12 @@ const ModalRegistro = ({ show, handleClose }) => {
 
       alert("Registro exitoso, ahora puede iniciar sesión");
       handleClose();
+      setAutenticado(true); //Actualizar el estado de autenticación
     } catch (err) {
-      setError("Error al registrar usuario. Inténtelo nuevamente");
+      setError(
+        err.response?.data?.message ||
+          "Error al registrar usuario. Inténtelo nuevamente"
+      );
     }
   };
 

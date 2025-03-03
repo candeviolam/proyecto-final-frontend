@@ -3,9 +3,15 @@ import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import ModalLogin from "./ModalLogin";
 import ModalRegistro from "./ModalRegistro";
 
-const ComponenteNavbar = () => {
+const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
   const [mostrarModalLogin, setMostrarModalLogin] = useState(false);
   const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
+
+  const cerrarSesion = () => {
+    localStorage.removeItem("token");
+    setAutenticado(false);
+    window.location.reload();
+  };
 
   return (
     <Navbar bg="light" expand="lg" className="shadow-sm">
@@ -14,13 +20,18 @@ const ComponenteNavbar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Button
-              variant="outline-primary"
-              className="me-2"
-              onClick={() => setMostrarModalLogin(true)}
-            >
-              Acceder
-            </Button>
+            {autenticado ? (
+              <Button variant="outline-danger" onClick={cerrarSesion}>
+                Cerrar Sesión
+              </Button>
+            ) : (
+              <Button
+                variant="outline-primary"
+                onClick={() => setMostrarModalLogin(true)}
+              >
+                Acceder
+              </Button>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
@@ -33,6 +44,7 @@ const ComponenteNavbar = () => {
           setMostrarModalLogin(false); //Cerrar el modal de inicio de sesión
           setMostrarModalRegistro(true);
         }}
+        setAutenticado={setAutenticado}
       />
 
       {/*Modal de Registro*/}

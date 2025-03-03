@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import axios from "../services/api";
 
-const ModalLogin = ({ show, handleClose, abrirRegistro }) => {
+const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
   const [email, setEmail] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [recordarme, setRecordarme] = useState(false);
@@ -11,17 +11,19 @@ const ModalLogin = ({ show, handleClose, abrirRegistro }) => {
   const manejarEnvio = async (e) => {
     e.preventDefault();
     try {
-      const respuesta = await axios.post("/auth/login", { email, constraseña });
+      const respuesta = await axios.post("/auth/login", { email, contraseña });
       localStorage.setItem("token", respuesta.data.token);
-
       if (recordarme) {
         localStorage.setItem("recordarme", "true");
       }
-
+      setAutenticado(true); //Establecer el estado de autenticación
       handleClose();
       window.location.reload(); //Refrescar para actualizar el estado de autenticación
     } catch (err) {
-      setError("Datos incorrectos o error en el servidor.");
+      setError(
+        err.response?.data?.message ||
+          "Datos incorrectos o error en el servidor"
+      );
     }
   };
 
@@ -39,6 +41,7 @@ const ModalLogin = ({ show, handleClose, abrirRegistro }) => {
               placeholder="Ingrese su email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
@@ -48,6 +51,7 @@ const ModalLogin = ({ show, handleClose, abrirRegistro }) => {
               placeholder="Ingrese su contraseña"
               value={contraseña}
               onChange={(e) => setContraseña(e.target.value)}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
