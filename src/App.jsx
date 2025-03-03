@@ -5,11 +5,12 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import RutaProtegida from "./components/RutaProtegida";
+import ComponenteNavbar from "./components/Navbar";
 
 function App() {
   return (
     <BrowserRouter>
-    <h1>¡Probando que funcione!</h1>
+      <ComponenteNavbar /> {/*Navbar en todas las páginas*/}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

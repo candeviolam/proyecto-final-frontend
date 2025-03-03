@@ -1,24 +1,61 @@
-import React, { useState } from "react";
-import ModalLogin from "../components/ModalLogin";
+import React, { useState, useEffect } from "react";
+import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import axios from "../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/Home.css";
 
 const Home = () => {
-  const [showModal, setShowModal] = useState(false);
+  //Estado para almacenar las encuestas
+  const [encuestas, setEncuestas] = useState([]);
 
-  const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  //Obtener encuestas activas desde el backend
+  useEffect(() => {
+    const obtenerEncuestas = async () => {
+      try {
+        const respuesta = await axios.get("/encuestas/activas");
+        setEncuestas(respuesta.data);
+      } catch (error) {
+        console.error("Error al obtener encuestas", error);
+      }
+    };
+
+    obtenerEncuestas();
+  }, []);
+
+  //Manejar clic en una encuesta
+  const manejarClicEncuesta = (id) => {
+    //Redirigir a la página de la encuesta
+    window.location.href = `/encuesta/${id}`;
+  };
 
   return (
-    <div className="contenedor text-center mt-5">
-      <h1>Bienvenido a Encuestas Online</h1>
-      <p>Explora y responde encuestas de manera fácil y rápida.</p>
-      <button className="btn btn-primary" onClick={handleShowModal}>
-        Iniciar Sesión / Registrarse
-      </button>
-
-      {/*Modal de Login/Registro*/}
-      <ModalLogin show={showModal} handleClose={handleCloseModal} />
-    </div>
+    <Container className="mt-5">
+      <h1 className="text-center mb-4">Encuestas Disponibles</h1>
+      <Row>
+        {encuestas.length > 0 ? (
+          encuestas.map((encuesta) => (
+            <Col key={encuesta._id} md={4} className="mb-4">
+              <Card className="h-100 shadow-sm">
+                <Card.Body>
+                  <Card.Title>{encuesta.nombre}</Card.Title>
+                  <Card.Text>{encuesta.categoria}</Card.Text>
+                  <Button
+                    variant="primary"
+                    onClick={() => manejarClicEncuesta(encuesta._id)}
+                  >
+                    Responder Encuesta
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          <p className="text-center">
+            No hay encuestas disponibles en este momento.
+          </p>
+        )}
+      </Row>
+    </Container>
   );
 };
 
