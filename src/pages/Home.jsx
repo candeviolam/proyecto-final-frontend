@@ -3,6 +3,7 @@ import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import axios from "../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Home.css";
+import "../styles/global.css";
 
 const Home = () => {
   //Estado para almacenar las encuestas
@@ -42,6 +43,7 @@ const Home = () => {
                   <Button
                     variant="primary"
                     onClick={() => manejarClicEncuesta(encuesta._id)}
+                    className="btn-primary"
                   >
                     Responder Encuesta
                   </Button>
