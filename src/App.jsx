@@ -3,8 +3,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
 import Admin from "./pages/Admin";
+import Encuesta from "./pages/Encuesta";
 import RutaProtegida from "./components/RutaProtegida";
 import ComponenteNavbar from "./components/Navbar";
 
@@ -14,7 +14,9 @@ function App() {
   //Verificar si el usuario está autenticado al cargar la página
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    const recordarme = localStorage.getItem("recordarme");
+
+    if (token && recordarme === "true") {
       setAutenticado(true);
     }
   }, []);
@@ -28,7 +30,6 @@ function App() {
       {/*Navbar en todas las páginas*/}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
         <Route
           path="/admin"
           element={
@@ -37,6 +38,7 @@ function App() {
             </RutaProtegida>
           }
         />
+        <Route path="/encuesta/:id" element={<Encuesta />} />
       </Routes>
     </BrowserRouter>
   );

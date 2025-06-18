@@ -5,3 +5,23 @@
   --color-text: #6a6e73; /*Gris oscuro*/
   --color-accent: #e1bee7; /*Lavanda*/
 }
+
+/*Botón principal reutilizable*/
+.boton-principal {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+}
+
+.boton-principal:hover {
+  background-color: var(--color-secondary);
+}
+
+/*Fondo claro para formularios y tarjetas*/
+.fondo-claro {
+  background-color: var(--color-background);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+}

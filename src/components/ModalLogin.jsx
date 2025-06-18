@@ -18,7 +18,6 @@ const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
       }
       setAutenticado(true); //Establecer el estado de autenticación
       handleClose();
-      window.location.reload(); //Refrescar para actualizar el estado de autenticación
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -72,7 +71,12 @@ const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
             </Button>
           </p>
           <p>
-            <Button variant="link">¿Ha olvidado su contraseña?</Button>
+            <Button
+              variant="link"
+              onClick={() => alert("Funcionalidad en desarrollo")}
+            >
+              ¿Ha olvidado su contraseña?
+            </Button>
           </p>
         </Form>
         {error && <p className="text-danger mt-2">{error}</p>}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import ModalLogin from "./ModalLogin";
 import ModalRegistro from "./ModalRegistro";
@@ -14,6 +14,14 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
     window.location.reload();
   };
 
+  const collapseRef = useRef();
+
+  useEffect(() => {
+    if (autenticado && collapseRef.current?.classList.contains("show")) {
+      collapseRef.current.classList.remove("show");
+    }
+  }, [autenticado]);
+
   return (
     <Navbar
       expand="lg"
@@ -28,7 +36,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
           Encuestas Online
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
+        <Navbar.Collapse id="basic-navbar-nav" ref={collapseRef}>
           <Nav className="ms-auto">
             {autenticado ? (
               <Button
@@ -72,6 +80,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
       <ModalRegistro
         show={mostrarModalRegistro}
         handleClose={() => setMostrarModalRegistro(false)}
+        setAutenticado={setAutenticado}
       />
     </Navbar>
   );

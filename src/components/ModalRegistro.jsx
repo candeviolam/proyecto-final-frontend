@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import axios from "../services/api";
 
-const ModalRegistro = ({ show, handleClose }) => {
+const ModalRegistro = ({ show, handleClose, setAutenticado }) => {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
-  const [telefono, setTelefono] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [repetirContraseña, setRepetirContraseña] = useState("");
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
@@ -14,23 +13,12 @@ const ModalRegistro = ({ show, handleClose }) => {
   const [error, setError] = useState("");
 
   const validarCampos = () => {
-    if (
-      !nombre ||
-      !apellido ||
-      !email ||
-      !telefono ||
-      !contraseña ||
-      !repetirContraseña
-    ) {
+    if (!nombre || !apellido || !email || !contraseña || !repetirContraseña) {
       setError("Todos los campos son obligatorios");
       return false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("El email ingresado no es válido");
-      return false;
-    }
-    if (!/^\d{10}$/.test(telefono)) {
-      setError("El teléfono debe tener 10 dígitos");
       return false;
     }
     if (contraseña.length < 6) {
@@ -45,6 +33,8 @@ const ModalRegistro = ({ show, handleClose }) => {
       setError("Debe aceptar los términos y condiciones");
       return false;
     }
+
+    return true;
   };
 
   const manejarEnvio = async (e) => {
@@ -56,13 +46,12 @@ const ModalRegistro = ({ show, handleClose }) => {
         nombre,
         apellido,
         email,
-        telefono,
         contraseña,
       });
 
-      alert("Registro exitoso, ahora puede iniciar sesión");
+      setAutenticado(true);
       handleClose();
-      setAutenticado(true); //Actualizar el estado de autenticación
+      window.location.reload();
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -105,16 +94,6 @@ const ModalRegistro = ({ show, handleClose }) => {
               placeholder="Ingrese su email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Teléfono</Form.Label>
-            <Form.Control
-              type="tel"
-              placeholder="Ingrese su  número de teléfono"
-              value={telefono}
-              onChange={(e) => setTelefono(e.target.value)}
               required
             />
           </Form.Group>

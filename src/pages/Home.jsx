@@ -6,14 +6,20 @@ import "../styles/Home.css";
 import "../styles/global.css";
 
 const Home = () => {
+  const [logueada, setLogueada] = useState(false);
   //Estado para almacenar las encuestas
   const [encuestas, setEncuestas] = useState([]);
 
   //Obtener encuestas activas desde el backend
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLogueada(true);
+    }
+
     const obtenerEncuestas = async () => {
       try {
-        const respuesta = await axios.get("/encuestas/activas");
+        const respuesta = await axios.get("/encuesta/activas");
         setEncuestas(respuesta.data);
       } catch (error) {
         console.error("Error al obtener encuestas", error);
@@ -32,6 +38,9 @@ const Home = () => {
   return (
     <Container className="mt-5">
       <h1 className="text-center mb-4">Encuestas Disponibles</h1>
+      {logueada && (
+        <p className="text-success text-center mb-4">Sesión iniciada</p>
+      )}
       <Row>
         {encuestas.length > 0 ? (
           encuestas.map((encuesta) => (
