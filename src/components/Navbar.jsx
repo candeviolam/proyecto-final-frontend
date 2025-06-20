@@ -16,6 +16,9 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
 
   const collapseRef = useRef();
 
+  const rol = localStorage.getItem("rol");
+  console.log("Rol actual:", rol);
+
   useEffect(() => {
     if (autenticado && collapseRef.current?.classList.contains("show")) {
       collapseRef.current.classList.remove("show");
@@ -25,7 +28,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
   return (
     <Navbar
       expand="lg"
-      className="shadow-sm"
+      className="shadow-sm fixed top-0 left-0 w-full z-50"
       style={{ backgroundColor: "var(--color-primary)" }}
     >
       <Container>
@@ -38,6 +41,20 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" ref={collapseRef}>
           <Nav className="ms-auto">
+            {rol === "admin" && (
+              <Button
+                variant="outline-light"
+                href="/admin"
+                style={{
+                  color: "var(--color-accent)",
+                  borderColor: "var(--color-accent)",
+                  marginRight: "10px",
+                }}
+              >
+                Panel Admin
+              </Button>
+            )}
+
             {autenticado ? (
               <Button
                 variant="outline-light"

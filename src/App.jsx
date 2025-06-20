@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Encuesta from "./pages/Encuesta";
 import RutaProtegida from "./components/RutaProtegida";
+import RutaProtegidaAdmin from "./components/RutaProtegidaAdmin";
 import ComponenteNavbar from "./components/Navbar";
 
 function App() {
@@ -14,9 +15,8 @@ function App() {
   //Verificar si el usuario está autenticado al cargar la página
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const recordarme = localStorage.getItem("recordarme");
 
-    if (token && recordarme === "true") {
+    if (token) {
       setAutenticado(true);
     }
   }, []);
@@ -33,9 +33,9 @@ function App() {
         <Route
           path="/admin"
           element={
-            <RutaProtegida>
+            <RutaProtegidaAdmin>
               <Admin />
-            </RutaProtegida>
+            </RutaProtegidaAdmin>
           }
         />
         <Route path="/encuesta/:id" element={<Encuesta />} />

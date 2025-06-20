@@ -13,11 +13,17 @@ const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
     try {
       const respuesta = await axios.post("/auth/login", { email, contraseña });
       localStorage.setItem("token", respuesta.data.token);
+
+      //Extraer el rol desde el token para que el frontend sepa si ese token corresponde a un admin o no
+      const datosToken = JSON.parse(atob(respuesta.data.token.split(".")[1]));
+      localStorage.setItem("rol", datosToken.rol);
+
       if (recordarme) {
         localStorage.setItem("recordarme", "true");
       }
       setAutenticado(true); //Establecer el estado de autenticación
       handleClose();
+      window.location.reload();
     } catch (err) {
       setError(
         err.response?.data?.message ||

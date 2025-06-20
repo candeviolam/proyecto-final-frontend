@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
 
-const RutaProtegida = ({ contenido }) => {
-  const token = localStorage.getItem("token"); // Verifica si el usuario tiene un token válido
+const RutaProtegida = ({ children }) => {
+  const token = localStorage.getItem("token"); 
 
-  return token ? contenido : <Navigate to="/login" />;
+  return token ? children : <Navigate to="/login" />;
 };
 
 export default RutaProtegida;

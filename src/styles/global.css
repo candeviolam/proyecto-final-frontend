@@ -4,6 +4,30 @@
   --color-background: #9fa3a9; /* Gris claro*/
   --color-text: #6a6e73; /*Gris oscuro*/
   --color-accent: #e1bee7; /*Lavanda*/
+  --color-success: #4caf50; /*Verde*/
+  --color-warning: #ff9800; /*Naranja*/
+  --color-error: #f44336; /*Rojo*/
+  --color-info: #90caf9; /*Celeste*/
+}
+
+.bg-color-primary {
+  background-color: var(--color-primary);
+}
+.bg-color-secondary {
+  background-color: var(--color-secondary);
+}
+.bg-color-success {
+  background-color: var(--color-success);
+}
+.bg-color-accent {
+  background-color: var(--color-accent);
+}
+.bg-color-info {
+  background-color: var(--color-info);
+}
+
+.text-oscuro {
+  color: #2b2b2b;
 }
 
 /*Botón principal reutilizable*/
@@ -24,4 +48,10 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: var(--color-text);
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }
