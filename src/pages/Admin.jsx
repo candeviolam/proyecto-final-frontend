@@ -54,13 +54,6 @@ export default function Admin() {
           <h2 className="text-xl font-bold mb-4">Respuestas de la semana</h2>
           <GraficoRespuestas />
         </section>
-
-        <Link to="/admin/encuestas" className="btn boton-principal mt-4">
-          Administrar Encuestas
-        </Link>
-        <Link to="/admin/categorias" className="btn boton-principal mt-4">
-          Administrar Categorías
-        </Link>
       </main>
     </div>
   );
