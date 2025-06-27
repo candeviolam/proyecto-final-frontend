@@ -66,29 +66,29 @@ const Home = () => {
       <section className="categorias-destacadas">
         <h2 className="titulo-categorias">Encuestas destacadas</h2>
         <div className="contenedor-categorias">
-          <Link to="#" className="categoria-box">
-            <h3>Encuesta sobre libros</h3>
-            <p>Género preferido</p>
+          <Link to="/categoria/Libros" className="categoria-box">
+            <h3>Libros</h3>
+            <p>Encuestas sobre lectura y preferencias</p>
           </Link>
-          <Link to="#" className="categoria-box">
-            <h3>Encuesta sobre libros</h3>
-            <p>Género preferido</p>
+          <Link to="/categoria/Música" className="categoria-box">
+            <h3>Música</h3>
+            <p>Encuestas sobre tus gustos musicales</p>
           </Link>
-          <Link to="#" className="categoria-box">
-            <h3>Encuesta sobre libros</h3>
-            <p>Género preferido</p>
+          <Link to="/categoria/Deporte" className="categoria-box">
+            <h3>Deporte</h3>
+            <p>Encuestas sobre actividad física</p>
           </Link>
-          <Link to="#" className="categoria-box">
-            <h3>Encuesta sobre libros</h3>
-            <p>Género preferido</p>
+          <Link to="/categoria/Mascotas" className="categoria-box">
+            <h3>Mascotas</h3>
+            <p>Encuestas sobre perros y gatos</p>
           </Link>
-          <Link to="#" className="categoria-box">
-            <h3>Encuesta sobre libros</h3>
-            <p>Género preferido</p>
+          <Link to="/categoria/Cuidado Personal" className="categoria-box">
+            <h3>Cuidado Personal</h3>
+            <p>Encuestas sobre cuidado capilar y facial</p>
           </Link>
-          <Link to="#" className="categoria-box">
-            <h3>Encuesta sobre libros</h3>
-            <p>Género preferido</p>
+          <Link to="/categoria/Alimentación" className="categoria-box">
+            <h3>Alimentación</h3>
+            <p>Encuestas sobre hábitos y recetas</p>
           </Link>
         </div>
       </section>

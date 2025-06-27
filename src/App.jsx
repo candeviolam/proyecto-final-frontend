@@ -9,6 +9,7 @@ import RutaProtegida from "./components/RutaProtegida";
 import RutaProtegidaAdmin from "./components/RutaProtegidaAdmin";
 import EncuestasAdmin from "./pages/EncuestasAdmin";
 import CategoriasAdmin from "./pages/CategoriasAdmin";
+import EncuestasPorCategoria from "./pages/EncuestasPorCategoria";
 import ComponenteNavbar from "./components/Navbar";
 import "./styles/global.css";
 import "./styles/index.css";
@@ -59,6 +60,7 @@ function App() {
             </RutaProtegidaAdmin>
           }
         />
+        <Route path="/categoria/:nombre" element={<EncuestasPorCategoria />} />
       </Routes>
     </BrowserRouter>
   );
