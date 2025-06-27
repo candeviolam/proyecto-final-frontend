@@ -7,6 +7,7 @@ import Admin from "./pages/Admin";
 import Encuesta from "./pages/Encuesta";
 import RutaProtegida from "./components/RutaProtegida";
 import RutaProtegidaAdmin from "./components/RutaProtegidaAdmin";
+import EncuestasAdmin from "./pages/EncuestasAdmin";
 import ComponenteNavbar from "./components/Navbar";
 import "./styles/global.css";
 import "./styles/index.css";
@@ -32,6 +33,7 @@ function App() {
       {/*Navbar en todas las páginas*/}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/encuesta/:id" element={<Encuesta />} />
         <Route
           path="/admin"
           element={
@@ -40,7 +42,14 @@ function App() {
             </RutaProtegidaAdmin>
           }
         />
-        <Route path="/encuesta/:id" element={<Encuesta />} />
+        <Route
+          path="/admin/encuestas"
+          element={
+            <RutaProtegidaAdmin>
+              <EncuestasAdmin />
+            </RutaProtegidaAdmin>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

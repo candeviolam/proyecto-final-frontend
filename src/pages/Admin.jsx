@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "react-bootstrap";
 import SidebarAdmin from "../components/SidebarAdmin";
 import TarjetaResumen from "../components/TarjetaResumen";
 import GraficoRespuestas from "../components/GraficoRespuestas";
@@ -53,6 +54,10 @@ export default function Admin() {
           <h2 className="text-xl font-bold mb-4">Respuestas de la semana</h2>
           <GraficoRespuestas />
         </section>
+
+        <Button className="boton-principal mt-4" href="/admin/encuestas">
+          Administrar Encuestas
+        </Button>
       </main>
     </div>
   );
