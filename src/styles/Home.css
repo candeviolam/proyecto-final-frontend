@@ -4,22 +4,23 @@
   padding: 20px;
 }
 
-/*Tarjetas*/
+/* Tarjetas */
 .card {
   transition: transform 0.2s, box-shadow 0.2s;
   border-radius: 10px;
   background-color: var(--color-background);
   border: none;
+  padding: 1.5rem;
 }
 
 .card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   cursor: pointer;
 }
 
-.card.title {
-  font-size: 1.5rem;
+.card-title {
+  font-size: 1.3rem;
   font-weight: bold;
   color: var(--color-text);
 }
@@ -31,9 +32,9 @@
 .btn-primary {
   background-color: var(--color-primary);
   border: none;
-  transition: backgorund-color 0.2s;
 }
 
 .btn-primary:hover {
   background-color: var(--color-secondary);
+  color: black;
 }

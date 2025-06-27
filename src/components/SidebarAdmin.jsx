@@ -1,23 +1,22 @@
 import { Link } from "react-router-dom";
+import "../styles/admin.css";
 
-export default function SidebarAdmin() {
+export default function SidebarAdmin({ mostrar, cerrar }) {
   return (
-    <aside className="fixed top-16 left-0 w-64 h-full bg-gray-800 text-white p-6 shadow-lg z-40">
-      <h2 className="text-2xl font-bold mb-8 text-center">Panel Admin</h2>
+    <aside className={`sidebar ${mostrar ? "mostrar" : ""}`}>
+      {/*Solo se ve el botón de cerrar en pantallas chicas*/}
+      <button className="cerrar-sidebar solo-mobile" onClick={cerrar}>
+        ✖
+      </button>
+
       <nav className="flex flex-col space-y-4">
-        <Link to="/admin" className="block px-4 py-2 rounded hover:text-purple-700 transition">
-          Inicio
+        <Link to="/admin" className="link-admin">
+          Inicio admin
         </Link>
-        <Link
-          to="/admin/encuestas"
-          className="block px-4 py-2 rounded hover:text-purple-700 transition"
-        >
+        <Link to="/admin/encuestas" className="link-admin">
           Encuestas
         </Link>
-        <Link
-          to="/admin/categorias"
-          className="block px-4 py-2 rounded hover:text-purple-700 transition"
-        >
+        <Link to="/admin/categorias" className="link-admin">
           Categorías
         </Link>
         <button
@@ -25,7 +24,7 @@ export default function SidebarAdmin() {
             localStorage.clear();
             window.location.href = "/";
           }}
-          className="text-left block px-4 py-2 rounded hover:text-red-600 transition"
+          className="link-admin cerrar"
         >
           Cerrar sesión
         </button>

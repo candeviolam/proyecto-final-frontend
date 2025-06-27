@@ -28,8 +28,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
   return (
     <Navbar
       expand="lg"
-      className="shadow-sm fixed top-0 left-0 w-full z-50"
-      style={{ backgroundColor: "var(--color-primary)" }}
+      className="navbar-custom fixed top-0 left-0 w-full z-50 shadow-sm"
     >
       <Container>
         <Navbar.Brand

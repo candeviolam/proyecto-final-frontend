@@ -8,6 +8,8 @@ import Encuesta from "./pages/Encuesta";
 import RutaProtegida from "./components/RutaProtegida";
 import RutaProtegidaAdmin from "./components/RutaProtegidaAdmin";
 import ComponenteNavbar from "./components/Navbar";
+import "./styles/global.css";
+import "./styles/index.css";
 
 function App() {
   const [autenticado, setAutenticado] = useState(false);

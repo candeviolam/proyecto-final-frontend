@@ -1,16 +1,29 @@
+import { useState } from "react";
 import SidebarAdmin from "../components/SidebarAdmin";
 import TarjetaResumen from "../components/TarjetaResumen";
 import GraficoRespuestas from "../components/GraficoRespuestas";
+import "../styles/admin.css";
 
 export default function Admin() {
-  return (
-    <div className="flex">
-      <SidebarAdmin />
+  const [mostrarSidebar, setMostrarSidebar] = useState(false);
 
-      <main className="flex-1 ml-64 pt-20 p-6 bg-gray-100 min-h-screen overflow-x-hidden">
+  return (
+    <div className="admin-layout">
+      <SidebarAdmin
+        mostrar={mostrarSidebar}
+        cerrar={() => setMostrarSidebar(false)}
+      />
+
+      <main className="admin-main">
+        <button
+          className="boton-hamburguesa"
+          onClick={() => setMostrarSidebar(true)}
+        >
+          ☰
+        </button>
+
         <h1 className="text-3xl font-bold mb-6">Panel de administración</h1>
 
-        {/*Acá van a ir las tarjetas de resumen y otros componentes*/}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <TarjetaResumen
             titulo="Encuestas"
