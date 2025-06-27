@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import SidebarAdmin from "../components/SidebarAdmin";
 import TarjetaResumen from "../components/TarjetaResumen";
 import GraficoRespuestas from "../components/GraficoRespuestas";
@@ -55,9 +55,12 @@ export default function Admin() {
           <GraficoRespuestas />
         </section>
 
-        <Button className="boton-principal mt-4" href="/admin/encuestas">
+        <Link to="/admin/encuestas" className="btn boton-principal mt-4">
           Administrar Encuestas
-        </Button>
+        </Link>
+        <Link to="/admin/categorias" className="btn boton-principal mt-4">
+          Administrar Categorías
+        </Link>
       </main>
     </div>
   );

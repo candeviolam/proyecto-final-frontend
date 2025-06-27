@@ -8,6 +8,7 @@ import Encuesta from "./pages/Encuesta";
 import RutaProtegida from "./components/RutaProtegida";
 import RutaProtegidaAdmin from "./components/RutaProtegidaAdmin";
 import EncuestasAdmin from "./pages/EncuestasAdmin";
+import CategoriasAdmin from "./pages/CategoriasAdmin";
 import ComponenteNavbar from "./components/Navbar";
 import "./styles/global.css";
 import "./styles/index.css";
@@ -47,6 +48,14 @@ function App() {
           element={
             <RutaProtegidaAdmin>
               <EncuestasAdmin />
+            </RutaProtegidaAdmin>
+          }
+        />
+        <Route
+          path="/admin/categorias"
+          element={
+            <RutaProtegidaAdmin>
+              <CategoriasAdmin />
             </RutaProtegidaAdmin>
           }
         />
