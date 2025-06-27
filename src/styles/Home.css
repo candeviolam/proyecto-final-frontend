@@ -4,37 +4,99 @@
   padding: 20px;
 }
 
-/* Tarjetas */
-.card {
-  transition: transform 0.2s, box-shadow 0.2s;
+/*Banner*/
+.banner-home {
+  background-image: url("/fondo-banner.jpeg");
+  background-size: cover;
+  background-position: center;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.banner-home h1 {
+  font-size: 2rem;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 1rem 2rem;
   border-radius: 10px;
-  background-color: var(--color-background);
-  border: none;
-  padding: 1.5rem;
 }
 
-.card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
+/* Píldoras */
+.categorias-destacadas {
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
-.card-title {
-  font-size: 1.3rem;
+.titulo-categorias {
+  font-size: 1.8rem;
   font-weight: bold;
-  color: var(--color-text);
+  margin-bottom: 2rem;
+  color: var(--color-primary);
 }
 
-.card-text {
-  color: var(--color-text);
+.contenedor-categorias {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.btn-primary {
+.categoria-box {
+  background-color: var(--color-background);
+  border: 2px solid var(--color-primary);
+  border-radius: 70px;
+  padding: 1.5rem 2rem;
+  min-width: 200px;
+  max-width: 250px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.categoria-box:hover {
   background-color: var(--color-primary);
-  border: none;
+  color: white;
+  transform: translateY(-5px);
 }
 
-.btn-primary:hover {
+.categoria-box h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.categoria-box p {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.9rem;
+}
+
+.banner {
+  background-image: url("/fondo-banner.jpeg");
+}
+
+/*Flechita*/
+.scroll-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.scroll-top:hover {
   background-color: var(--color-secondary);
-  color: black;
+  transform: scale(1.1);
 }
