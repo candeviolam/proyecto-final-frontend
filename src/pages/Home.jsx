@@ -64,31 +64,40 @@ const Home = () => {
       )}
 
       <section className="categorias-destacadas">
-        <h2 className="titulo-categorias">Encuestas destacadas</h2>
+        <h2 className="titulo-categorias">Categorías</h2>
         <div className="contenedor-categorias">
           <Link to="/categoria/Libros" className="categoria-box">
             <h3>Libros</h3>
-            <p>Encuestas sobre lectura y preferencias</p>
+            <p>Encuestas sobre hábitos y géneros literarios.</p>
           </Link>
           <Link to="/categoria/Música" className="categoria-box">
             <h3>Música</h3>
-            <p>Encuestas sobre tus gustos musicales</p>
+            <p>Comparte tu pasión y costumbres musicales.</p>
           </Link>
           <Link to="/categoria/Deporte" className="categoria-box">
             <h3>Deporte</h3>
-            <p>Encuestas sobre actividad física</p>
+            <p>Participá contando tu actividad física.</p>
           </Link>
           <Link to="/categoria/Mascotas" className="categoria-box">
             <h3>Mascotas</h3>
-            <p>Encuestas sobre perros y gatos</p>
+            <p>Contanos sobre tus animales y sus cuidados.</p>
           </Link>
-          <Link to="/categoria/Cuidado Personal" className="categoria-box">
-            <h3>Cuidado Personal</h3>
-            <p>Encuestas sobre cuidado capilar y facial</p>
+          <Link
+            to="/categoria/Hábitos y Bienestar Personal"
+            className="categoria-box"
+          >
+            <h3>Hábitos y Bienestar Personal</h3>
+            <p>Explorá tu día a día y bienestar emocional.</p>
           </Link>
           <Link to="/categoria/Alimentación" className="categoria-box">
             <h3>Alimentación</h3>
-            <p>Encuestas sobre hábitos y recetas</p>
+            <p>Compartí tus hábitos y preferencias alimenticias.</p>
+          </Link>
+        </div>
+
+        <div className="text-center mt-4">
+          <Link to="/todas" className="btn btn-todas-encuestas">
+            Ver todas las encuestas
           </Link>
         </div>
       </section>

@@ -24,7 +24,7 @@
   border-radius: 10px;
 }
 
-/* Píldoras */
+/* Categorías */
 .categorias-destacadas {
   text-align: center;
   margin-top: 3rem;
@@ -78,7 +78,19 @@
   background-image: url("/fondo-banner.jpeg");
 }
 
-/*Flechita*/
+/*Botón para ver todas las encuestas*/
+.btn-todas-encuestas {
+  background-color: var(--color-secondary);
+  color: #fff;
+  border: none;
+}
+
+.btn-todas-encuestas:hover {
+  background-color: #9a7dca; /* Un tono un poquito más oscuro */
+  color: #fff;
+}
+
+/*Flechita de scroll hacia arriba*/
 .scroll-top {
   position: fixed;
   bottom: 20px;

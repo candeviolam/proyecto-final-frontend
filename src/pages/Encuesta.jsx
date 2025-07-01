@@ -8,6 +8,7 @@ const Encuesta = () => {
   const { id } = useParams();
   const [encuesta, setEncuesta] = useState(null);
   const [respuestas, setRespuestas] = useState([]);
+  const [preguntaActual, setPreguntaActual] = useState(0);
   const [email, setEmail] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
@@ -37,6 +38,21 @@ const Encuesta = () => {
     setRespuestas(nuevasRespuestas);
   };
 
+  const manejarCambioMultiple = (index, opcion) => {
+    const seleccionadas = respuestas[index] || [];
+    let nuevasSeleccionadas;
+
+    if (seleccionadas.includes(opcion)) {
+      nuevasSeleccionadas = seleccionadas.filter((o) => o !== opcion);
+    } else {
+      nuevasSeleccionadas = [...seleccionadas, opcion];
+    }
+
+    const nuevasRespuestas = [...respuestas];
+    nuevasRespuestas[index] = nuevasSeleccionadas;
+    setRespuestas(nuevasRespuestas);
+  };
+
   //Enviar respuestas
   const manejarEnvio = async (e) => {
     e.preventDefault();
@@ -59,57 +75,133 @@ const Encuesta = () => {
     }
   };
 
-  if (cargando) return <Spinner animation="border" className="m-5" />;
+  //Validar antes de pasar de pregunta
+  const validarYAvanzar = () => {
+    const resp = respuestas[preguntaActual];
+    const tipoPregunta = encuesta.preguntas[preguntaActual]?.tipo;
 
-  if (error) return <Alert variant="danger">{error}</Alert>;
+    if (
+      (tipoPregunta === "texto" && (!resp || resp.trim() === "")) ||
+      (tipoPregunta === "opcionUnica" && !resp) ||
+      (tipoPregunta === "opcionMultiple" && (!resp || resp.length === 0))
+    ) {
+      setError("Por favor responder la pregunta antes de continuar.");
+      return;
+    }
+
+    setError("");
+    setPreguntaActual(preguntaActual + 1);
+  };
+
+  if (cargando) return <Spinner animation="border" className="m-5" />;
+  if (error && !mensaje) return <Alert variant="danger">{error}</Alert>;
 
   return (
     <Container className="mt-5">
       <div className="fondo-claro">
         <h2>{encuesta.nombre}</h2>
         <p>Categoría: {encuesta.categoria}</p>
+
         <Form onSubmit={manejarEnvio}>
           {encuesta.preguntas.map((pregunta, index) => (
-            <Form.Group className="mb-3" key={index}>
-              <Form.Label>
-                {index + 1}. {pregunta.pregunta}
-              </Form.Label>
-              {pregunta.tipo === "texto" ? (
-                <Form.Control
-                  type="text"
-                  value={respuestas[index]}
-                  onChange={(e) => manejarCambio(index, e.target.value)}
-                />
-              ) : (
-                <Form.Select
-                  value={respuestas[index]}
-                  onChange={(e) => manejarCambio(index, e.target.value)}
-                >
-                  <option value="">Seleccione una opción</option>
-                  {pregunta.opciones.map((op, i) => (
-                    <option key={i} value={op}>
-                      {op}
-                    </option>
-                  ))}
-                </Form.Select>
-              )}
-            </Form.Group>
+            <div
+              key={index}
+              style={{
+                opacity: index === preguntaActual ? 1 : 0.3,
+                pointerEvents: index === preguntaActual ? "auto" : "none",
+                transition: "opacity 0.3s",
+              }}
+            >
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  {index + 1}. {pregunta.pregunta}
+                </Form.Label>
+
+                {pregunta.tipo === "texto" && (
+                  <Form.Control
+                    type="text"
+                    value={respuestas[index] || ""}
+                    onChange={(e) => manejarCambio(index, e.target.value)}
+                  />
+                )}
+
+                {pregunta.tipo === "opcionUnica" && (
+                  <div>
+                    {pregunta.opciones.map((op, i) => (
+                      <Form.Check
+                        key={i}
+                        type="radio"
+                        name={`pregunta_${index}`}
+                        label={op}
+                        checked={respuestas[index] === op}
+                        onChange={() => manejarCambio(index, op)}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {pregunta.tipo === "opcionMultiple" && (
+                  <div>
+                    {pregunta.opciones.map((op, i) => (
+                      <Form.Check
+                        key={i}
+                        type="checkbox"
+                        label={op}
+                        checked={respuestas[index]?.includes(op)}
+                        onChange={() => manejarCambioMultiple(index, op)}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {pregunta.tipo === "escala" && (
+                  <Form.Range
+                    min={0}
+                    max={10}
+                    value={respuestas[index] || 0}
+                    onChange={(e) => manejarCambio(index, e.target.value)}
+                  />
+                )}
+              </Form.Group>
+            </div>
           ))}
-          <Form.Group className="mb-3">
-            <Form.Label>
-              Email (opcional, para recibir tus respuestas)
-            </Form.Label>
-            <Form.Control
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="ejemplo@ejemplo.com"
-            />
-          </Form.Group>
-          <Button type="submit" className="boton-principal">
-            Enviar respuestas
-          </Button>
+
+          {/*Email visible en la última pregunta*/}
+          {preguntaActual === encuesta.preguntas.length - 1 && (
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Email (opcional, para recibir tus respuestas)
+              </Form.Label>
+              <Form.Control
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ejemplo@ejemplo.com"
+              />
+            </Form.Group>
+          )}
+
+          {/*Navegación*/}
+          <div className="d-flex justify-content-between mt-4">
+            <Button
+              variant="secondary"
+              disabled={preguntaActual === 0}
+              onClick={() => setPreguntaActual(preguntaActual - 1)}
+            >
+              Anterior
+            </Button>
+            {preguntaActual < encuesta.preguntas.length - 1 ? (
+              <Button variant="primary" onClick={validarYAvanzar}>
+                Siguiente
+              </Button>
+            ) : (
+              <Button variant="success" type="submit">
+                Enviar
+              </Button>
+            )}
+          </div>
         </Form>
+
         {mensaje && (
           <Alert variant="success" className="mt-3">
             {mensaje}
