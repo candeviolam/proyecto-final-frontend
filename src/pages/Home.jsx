@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -8,49 +8,40 @@ import "../styles/global.css";
 
 const Home = () => {
   const [logueada, setLogueada] = useState(false);
-  //Estado para almacenar las encuestas
-  const [encuestas, setEncuestas] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [mostrarScroll, setMostrarScroll] = useState(false);
 
-  //Manejar clic en una encuesta
-  const manejarClicEncuesta = (id) => {
-    //Redirigir a la página de la encuesta
-    window.location.href = `/encuesta/${id}`;
-  };
-
-  //Obtener encuestas activas desde el backend
+  // Obtener token para mostrar mensaje si hay sesión
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setLogueada(true);
     }
+  }, []);
 
-    const obtenerEncuestas = async () => {
+  // Obtener categorías dinámicamente
+  useEffect(() => {
+    const obtenerCategorias = async () => {
       try {
-        const respuesta = await axios.get("/encuesta/activas");
-        setEncuestas(respuesta.data);
+        const resp = await axios.get("/categoria/obtener");
+        const activas = resp.data.filter((c) => c.estado);
+        setCategorias(activas);
       } catch (error) {
-        console.error("Error al obtener encuestas", error);
+        console.error("Error al obtener categorías", error);
       }
     };
 
-    obtenerEncuestas();
+    obtenerCategorias();
   }, []);
 
+  // Mostrar botón scroll-top
   useEffect(() => {
     const manejarScroll = () => {
-      if (window.scrollY > 100) {
-        setMostrarScroll(true);
-      } else {
-        setMostrarScroll(false);
-      }
+      setMostrarScroll(window.scrollY > 100);
     };
 
     window.addEventListener("scroll", manejarScroll);
-
-    return () => {
-      window.removeEventListener("scroll", manejarScroll);
-    };
+    return () => window.removeEventListener("scroll", manejarScroll);
   }, []);
 
   return (
@@ -66,38 +57,16 @@ const Home = () => {
       <section className="categorias-destacadas">
         <h2 className="titulo-categorias">Categorías</h2>
         <div className="contenedor-categorias">
-          <Link to="/categoria/Cultura" className="categoria-box">
-            <h3>Cultura</h3>
-            <p>Encuestas sobre libros, música, cine y más.</p>
-          </Link>
-          <Link to="/categoria/Estilo de vida" className="categoria-box">
-            <h3>Estilo de vida</h3>
-            <p>Tu día a día, intereses y bienestar personal.</p>
-          </Link>
-          <Link to="/categoria/Deporte" className="categoria-box">
-            <h3>Deporte</h3>
-            <p>Contanos sobre tu actividad física.</p>
-          </Link>
-          <Link to="/categoria/Alimentación" className="categoria-box">
-            <h3>Alimentación</h3>
-            <p>Compartí tus hábitos y preferencias alimenticias.</p>
-          </Link>
-          <Link to="/categoria/Mascotas" className="categoria-box">
-            <h3>Mascotas</h3>
-            <p>Hablá sobre tus animales y cuidados.</p>
-          </Link>
-          <Link to="/categoria/Tecnología" className="categoria-box">
-            <h3>Tecnología</h3>
-            <p>Tu experiencia con dispositivos y servicios.</p>
-          </Link>
-          <Link to="/categoria/Educación" className="categoria-box">
-            <h3>Educación</h3>
-            <p>Encuestas sobre estudio y educación.</p>
-          </Link>
-          <Link to="/categoria/Medio ambiente" className="categoria-box">
-            <h3>Medio ambiente</h3>
-            <p>Acciones y opiniones para cuidar el planeta.</p>
-          </Link>
+          {categorias.map((categoria) => (
+            <Link
+              key={categoria._id}
+              to={`/categoria/${categoria.nombre}`}
+              className="categoria-box"
+            >
+              <h3>{categoria.nombre}</h3>
+              <p>Explorá encuestas de esta categoría.</p>
+            </Link>
+          ))}
         </div>
 
         <div className="text-center mt-4">

@@ -23,6 +23,23 @@ export default function EncuestasAdmin() {
     preguntas: [],
   });
 
+  const [categorias, setCategorias] = useState([]);
+
+  // Obtener categorías
+  useEffect(() => {
+    const obtenerCategorias = async () => {
+      try {
+        const resp = await axios.get("/categoria/obtener");
+        const activas = resp.data.filter((c) => c.estado);
+        setCategorias(activas);
+      } catch (error) {
+        console.error("Error al obtener categorías", error);
+      }
+    };
+
+    obtenerCategorias();
+  }, []);
+
   //Obtener encuestas
   useEffect(() => {
     obtenerEncuestas();
@@ -211,6 +228,29 @@ export default function EncuestasAdmin() {
                 }
               />
             </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Categoría</Form.Label>
+              <Form.Select
+                value={encuestaActual.categoria}
+                onChange={(e) =>
+                  setEncuestaActual({
+                    ...encuestaActual,
+                    categoria: e.target.value,
+                  })
+                }
+              >
+                <option value="">Seleccionar categoría</option>
+                {categorias
+                  .filter((c) => c.estado)
+                  .map((c) => (
+                    <option key={c._id} value={c.nombre}>
+                      {c.nombre}
+                    </option>
+                  ))}
+              </Form.Select>
+            </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Preguntas (una por línea)</Form.Label>
               <Form.Control
@@ -236,6 +276,7 @@ export default function EncuestasAdmin() {
             </Form.Group>
           </Form>
         </Modal.Body>
+
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setMostrarModal(false)}>
             Cancelar
