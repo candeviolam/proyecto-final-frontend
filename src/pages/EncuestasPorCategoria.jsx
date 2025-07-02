@@ -26,6 +26,8 @@ export default function EncuestasPorCategoria() {
     return limpio.charAt(0).toUpperCase() + limpio.slice(1);
   };
 
+  const capitalizar = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1);
+
   useEffect(() => {
     const obtener = async () => {
       setCargando(true);
@@ -71,7 +73,7 @@ export default function EncuestasPorCategoria() {
 
   return (
     <Container className="mt-5">
-      <h1 className="mb-4 text-center">Encuestas de {nombre}</h1>
+      <h1 className="mb-4 text-center">Encuestas de {capitalizar(nombre)}</h1>
       {encuestas.length === 0 ? (
         <p className="text-center">
           No hay encuestas disponibles en esta categoría.

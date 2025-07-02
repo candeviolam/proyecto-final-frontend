@@ -66,32 +66,37 @@ const Home = () => {
       <section className="categorias-destacadas">
         <h2 className="titulo-categorias">Categorías</h2>
         <div className="contenedor-categorias">
-          <Link to="/categoria/Libros" className="categoria-box">
-            <h3>Libros</h3>
-            <p>Encuestas sobre hábitos y géneros literarios.</p>
+          <Link to="/categoria/Cultura" className="categoria-box">
+            <h3>Cultura</h3>
+            <p>Encuestas sobre libros, música, cine y más.</p>
           </Link>
-          <Link to="/categoria/Música" className="categoria-box">
-            <h3>Música</h3>
-            <p>Comparte tu pasión y costumbres musicales.</p>
+          <Link to="/categoria/Estilo de vida" className="categoria-box">
+            <h3>Estilo de vida</h3>
+            <p>Tu día a día, intereses y bienestar personal.</p>
           </Link>
           <Link to="/categoria/Deporte" className="categoria-box">
             <h3>Deporte</h3>
-            <p>Participá contando tu actividad física.</p>
-          </Link>
-          <Link to="/categoria/Mascotas" className="categoria-box">
-            <h3>Mascotas</h3>
-            <p>Contanos sobre tus animales y sus cuidados.</p>
-          </Link>
-          <Link
-            to="/categoria/Hábitos y Bienestar Personal"
-            className="categoria-box"
-          >
-            <h3>Hábitos y Bienestar Personal</h3>
-            <p>Explorá tu día a día y bienestar emocional.</p>
+            <p>Contanos sobre tu actividad física.</p>
           </Link>
           <Link to="/categoria/Alimentación" className="categoria-box">
             <h3>Alimentación</h3>
             <p>Compartí tus hábitos y preferencias alimenticias.</p>
+          </Link>
+          <Link to="/categoria/Mascotas" className="categoria-box">
+            <h3>Mascotas</h3>
+            <p>Hablá sobre tus animales y cuidados.</p>
+          </Link>
+          <Link to="/categoria/Tecnología" className="categoria-box">
+            <h3>Tecnología</h3>
+            <p>Tu experiencia con dispositivos y servicios.</p>
+          </Link>
+          <Link to="/categoria/Educación" className="categoria-box">
+            <h3>Educación</h3>
+            <p>Encuestas sobre estudio y educación.</p>
+          </Link>
+          <Link to="/categoria/Medio ambiente" className="categoria-box">
+            <h3>Medio ambiente</h3>
+            <p>Acciones y opiniones para cuidar el planeta.</p>
           </Link>
         </div>
 
