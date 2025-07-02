@@ -19,6 +19,13 @@ export default function EncuestasPorCategoria() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
+  //Función que limpia el título
+  const limpiarTitulo = (nombre) => {
+    if (!nombre) return "";
+    const limpio = nombre.replace(/^Encuesta (de|sobre)\s*/i, "").trim();
+    return limpio.charAt(0).toUpperCase() + limpio.slice(1);
+  };
+
   useEffect(() => {
     const obtener = async () => {
       setCargando(true);
@@ -75,7 +82,7 @@ export default function EncuestasPorCategoria() {
             <Col key={encuesta._id} md={4} className="mb-4">
               <Card className="h-100">
                 <Card.Body>
-                  <Card.Title>{encuesta.nombre}</Card.Title>
+                  <Card.Title>{limpiarTitulo(encuesta.nombre)}</Card.Title>
                   <Card.Text>Categoría: {encuesta.categoria}</Card.Text>
                   <Button
                     as={Link}

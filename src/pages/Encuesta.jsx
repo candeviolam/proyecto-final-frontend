@@ -33,6 +33,13 @@ const Encuesta = () => {
     return "/fondo-generico.jpg";
   };
 
+  //Función que quita "Encuesta de" o "Encuesta sobre" del título
+  const limpiarTitulo = (nombre) => {
+    if (!nombre) return "";
+    const limpio = nombre.replace(/^Encuesta (de|sobre)\s*/i, "").trim();
+    return limpio.charAt(0).toUpperCase() + limpio.slice(1);
+  };
+
   //Obtener encuesta al cargar la página
   useEffect(() => {
     const obtenerEncuesta = async () => {
@@ -144,7 +151,7 @@ const Encuesta = () => {
         }}
       >
         <div className="bienvenida-encuesta">
-          <h2>{encuesta.nombre}</h2>
+          <h2>{limpiarTitulo(encuesta.nombre)}</h2>
           <p>
             Gracias por participar. Tu respuesta es importante para ayudarnos a
             conocer tu opinión.
@@ -193,7 +200,7 @@ const Encuesta = () => {
       ) : (
         <Container className="mt-5 d-flex justify-content-center">
           <div className="contenedor-preguntas">
-            <h2>{encuesta.nombre}</h2>
+            <h2>{limpiarTitulo(encuesta.nombre)}</h2>
             <p>Categoría: {encuesta.categoria}</p>
 
             <Form onSubmit={manejarEnvio} onKeyDown={manejarEnter}>
