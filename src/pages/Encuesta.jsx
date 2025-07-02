@@ -111,6 +111,17 @@ const Encuesta = () => {
     setPreguntaActual(preguntaActual + 1);
   };
 
+  const manejarEnter = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (preguntaActual < encuesta.preguntas.length - 1) {
+        validarYAvanzar();
+      } else {
+        manejarEnvio(e);
+      }
+    }
+  };
+
   if (cargando) return <Spinner animation="border" className="m-5" />;
   if (errorCarga) return <Alert variant="danger">{errorCarga}</Alert>;
 
@@ -168,7 +179,7 @@ const Encuesta = () => {
           <h2>{encuesta.nombre}</h2>
           <p>Categoría: {encuesta.categoria}</p>
 
-          <Form onSubmit={manejarEnvio}>
+          <Form onSubmit={manejarEnvio} onKeyDown={manejarEnter}>
             {encuesta.preguntas.map((pregunta, index) => (
               <div
                 key={index}
