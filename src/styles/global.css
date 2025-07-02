@@ -94,7 +94,7 @@ body,
   background-color: var(--color-success);
 }
 
-.encuesta-fondo {
+.fondo-encuesta {
   display: flex;
   align-items: flex-start;
   justify-content: center;
