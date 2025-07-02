@@ -78,10 +78,9 @@ export default function EncuestasPorCategoria() {
                   <Card.Title>{encuesta.nombre}</Card.Title>
                   <Card.Text>Categoría: {encuesta.categoria}</Card.Text>
                   <Button
-                    variant="primary"
                     as={Link}
                     to={`/encuesta/${encuesta._id}`}
-                    className="btn-primary"
+                    className="boton-comenzar"
                   >
                     Responder Encuesta
                   </Button>

@@ -6,13 +6,31 @@ import "../styles/global.css";
 
 const Encuesta = () => {
   const { id } = useParams();
+  const [inicio, setInicio] = useState(false);
   const [encuesta, setEncuesta] = useState(null);
   const [respuestas, setRespuestas] = useState([]);
   const [preguntaActual, setPreguntaActual] = useState(0);
   const [email, setEmail] = useState("");
   const [mensaje, setMensaje] = useState("");
-  const [error, setError] = useState("");
+  const [errorCarga, setErrorCarga] = useState("");
+  const [errorValidacion, setErrorValidacion] = useState("");
   const [cargando, setCargando] = useState(true);
+
+  const obtenerImagenFondo = (categoria, nombreEncuesta) => {
+    if (categoria === "Hábitos y Bienestar Personal") {
+      if (nombreEncuesta.includes("Encuesta sobre bienestar personal")) {
+        return "/fondo-bienestar.jpeg";
+      } else {
+        return "/fondo-pantallas.jpeg";
+      }
+    }
+    if (categoria === "Música") return "/fondo-musica.jpeg";
+    if (categoria === "Libros") return "/fondo-libros.jpeg";
+    if (categoria === "Deporte") return "/fondo-deporte.jpeg";
+    if (categoria === "Mascotas") return "/fondo-mascotas.jpeg";
+    if (categoria === "Alimentación") return "/fondo-alimentacion.jpeg";
+    return "/fondo-generico.jpg";
+  };
 
   //Obtener encuesta al cargar la página
   useEffect(() => {
@@ -22,7 +40,7 @@ const Encuesta = () => {
         setEncuesta(respuesta.data);
         setRespuestas(new Array(respuesta.data.preguntas.length).fill("")); //Inicializa respuestas vacías
       } catch (err) {
-        setError("No se pudo cargar la encuesta");
+        setErrorCarga("No se pudo cargar la encuesta");
       } finally {
         setCargando(false);
       }
@@ -85,130 +103,189 @@ const Encuesta = () => {
       (tipoPregunta === "opcionUnica" && !resp) ||
       (tipoPregunta === "opcionMultiple" && (!resp || resp.length === 0))
     ) {
-      setError("Por favor responder la pregunta antes de continuar.");
+      setErrorValidacion("Por favor responder la pregunta antes de continuar.");
       return;
     }
 
-    setError("");
+    setErrorValidacion("");
     setPreguntaActual(preguntaActual + 1);
   };
 
   if (cargando) return <Spinner animation="border" className="m-5" />;
-  if (error && !mensaje) return <Alert variant="danger">{error}</Alert>;
+  if (errorCarga) return <Alert variant="danger">{errorCarga}</Alert>;
+
+  if (!inicio) {
+    return (
+      <div
+        className="fondo-encuesta"
+        style={{
+          backgroundImage: `url(${obtenerImagenFondo(
+            encuesta.categoria,
+            encuesta.nombre
+          )})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div className="bienvenida-encuesta">
+          <h2>{encuesta.nombre}</h2>
+          <p>
+            Gracias por participar. Tu respuesta es importante para ayudarnos a
+            conocer tu opinión.
+          </p>
+          <Button
+            onClick={() => setInicio(true)}
+            className="boton-comenzar mt-3"
+          >
+            Comenzar Encuesta
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <Container className="mt-5">
-      <div className="fondo-claro">
-        <h2>{encuesta.nombre}</h2>
-        <p>Categoría: {encuesta.categoria}</p>
+    <div
+      className="encuesta-fondo"
+      style={{
+        backgroundImage: `url(${obtenerImagenFondo(
+          encuesta.categoria,
+          encuesta.nombre
+        )})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        paddingTop: "50px",
+        paddingBottom: "50px",
+      }}
+    >
+      <Container className="mt-5 d-flex justify-content-center">
+        <div className="contenedor-preguntas">
+          <h2>{encuesta.nombre}</h2>
+          <p>Categoría: {encuesta.categoria}</p>
 
-        <Form onSubmit={manejarEnvio}>
-          {encuesta.preguntas.map((pregunta, index) => (
-            <div
-              key={index}
-              style={{
-                opacity: index === preguntaActual ? 1 : 0.3,
-                pointerEvents: index === preguntaActual ? "auto" : "none",
-                transition: "opacity 0.3s",
-              }}
-            >
+          <Form onSubmit={manejarEnvio}>
+            {encuesta.preguntas.map((pregunta, index) => (
+              <div
+                key={index}
+                style={{
+                  opacity: index === preguntaActual ? 1 : 0.3,
+                  pointerEvents: index === preguntaActual ? "auto" : "none",
+                  transition: "opacity 0.3s",
+                }}
+              >
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    {index + 1}. {pregunta.pregunta}
+                  </Form.Label>
+
+                  {pregunta.tipo === "texto" && (
+                    <Form.Control
+                      type="text"
+                      value={respuestas[index] || ""}
+                      onChange={(e) => manejarCambio(index, e.target.value)}
+                    />
+                  )}
+
+                  {pregunta.tipo === "opcionUnica" && (
+                    <div>
+                      {pregunta.opciones.map((op, i) => (
+                        <Form.Check
+                          key={i}
+                          type="radio"
+                          name={`pregunta_${index}`}
+                          label={op}
+                          checked={respuestas[index] === op}
+                          onChange={() => manejarCambio(index, op)}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {pregunta.tipo === "opcionMultiple" && (
+                    <div>
+                      {pregunta.opciones.map((op, i) => (
+                        <Form.Check
+                          key={i}
+                          type="checkbox"
+                          label={op}
+                          checked={respuestas[index]?.includes(op)}
+                          onChange={() => manejarCambioMultiple(index, op)}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {pregunta.tipo === "escala" && (
+                    <div>
+                      <Form.Range
+                        min={0}
+                        max={10}
+                        value={respuestas[index] || 0}
+                        onChange={(e) => manejarCambio(index, e.target.value)}
+                      />
+                      <span className="ms-2">{respuestas[index] || 0}</span>
+                    </div>
+                  )}
+
+                  {/*Mostrar alerta debajo de la pregunta no respondida*/}
+                  {errorValidacion && index === preguntaActual && (
+                    <Alert variant="danger" className="mt-2">
+                      {errorValidacion}
+                    </Alert>
+                  )}
+                </Form.Group>
+              </div>
+            ))}
+
+            {/*Email visible en la última pregunta*/}
+            {preguntaActual === encuesta.preguntas.length - 1 && (
               <Form.Group className="mb-3">
                 <Form.Label>
-                  {index + 1}. {pregunta.pregunta}
+                  Email (opcional, para recibir tus respuestas)
                 </Form.Label>
-
-                {pregunta.tipo === "texto" && (
-                  <Form.Control
-                    type="text"
-                    value={respuestas[index] || ""}
-                    onChange={(e) => manejarCambio(index, e.target.value)}
-                  />
-                )}
-
-                {pregunta.tipo === "opcionUnica" && (
-                  <div>
-                    {pregunta.opciones.map((op, i) => (
-                      <Form.Check
-                        key={i}
-                        type="radio"
-                        name={`pregunta_${index}`}
-                        label={op}
-                        checked={respuestas[index] === op}
-                        onChange={() => manejarCambio(index, op)}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {pregunta.tipo === "opcionMultiple" && (
-                  <div>
-                    {pregunta.opciones.map((op, i) => (
-                      <Form.Check
-                        key={i}
-                        type="checkbox"
-                        label={op}
-                        checked={respuestas[index]?.includes(op)}
-                        onChange={() => manejarCambioMultiple(index, op)}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {pregunta.tipo === "escala" && (
-                  <Form.Range
-                    min={0}
-                    max={10}
-                    value={respuestas[index] || 0}
-                    onChange={(e) => manejarCambio(index, e.target.value)}
-                  />
-                )}
+                <Form.Control
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="ejemplo@ejemplo.com"
+                />
               </Form.Group>
-            </div>
-          ))}
-
-          {/*Email visible en la última pregunta*/}
-          {preguntaActual === encuesta.preguntas.length - 1 && (
-            <Form.Group className="mb-3">
-              <Form.Label>
-                Email (opcional, para recibir tus respuestas)
-              </Form.Label>
-              <Form.Control
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="ejemplo@ejemplo.com"
-              />
-            </Form.Group>
-          )}
-
-          {/*Navegación*/}
-          <div className="d-flex justify-content-between mt-4">
-            <Button
-              variant="secondary"
-              disabled={preguntaActual === 0}
-              onClick={() => setPreguntaActual(preguntaActual - 1)}
-            >
-              Anterior
-            </Button>
-            {preguntaActual < encuesta.preguntas.length - 1 ? (
-              <Button variant="primary" onClick={validarYAvanzar}>
-                Siguiente
-              </Button>
-            ) : (
-              <Button variant="success" type="submit">
-                Enviar
-              </Button>
             )}
-          </div>
-        </Form>
 
-        {mensaje && (
-          <Alert variant="success" className="mt-3">
-            {mensaje}
-          </Alert>
-        )}
-      </div>
-    </Container>
+            {/*Navegación*/}
+            <div className="d-flex justify-content-between mt-4">
+              <Button
+                variant="secondary"
+                disabled={preguntaActual === 0}
+                onClick={() => setPreguntaActual(preguntaActual - 1)}
+              >
+                Anterior
+              </Button>
+              {preguntaActual < encuesta.preguntas.length - 1 ? (
+                <Button variant="primary" onClick={validarYAvanzar}>
+                  Siguiente
+                </Button>
+              ) : (
+                <Button variant="success" type="submit">
+                  Enviar
+                </Button>
+              )}
+            </div>
+          </Form>
+
+          {mensaje && (
+            <Alert variant="success" className="mt-3">
+              {mensaje}
+            </Alert>
+          )}
+        </div>
+      </Container>
+    </div>
   );
 };
 
