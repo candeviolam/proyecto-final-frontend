@@ -28,6 +28,10 @@ export default function EncuestasAdmin() {
   const [categorias, setCategorias] = useState([]);
   const [errorFormulario, setErrorFormulario] = useState("");
   const [preguntasTexto, setPreguntasTexto] = useState("");
+  // Filtros
+  const [filtroNombre, setFiltroNombre] = useState("");
+  const [filtroCategoria, setFiltroCategoria] = useState("todas");
+  const [filtroEstado, setFiltroEstado] = useState("todas");
 
   // Obtener categorías
   useEffect(() => {
@@ -199,12 +203,63 @@ export default function EncuestasAdmin() {
       </Container>
     );
 
+  // Filtrado de encuestas
+  const encuestasFiltradas = encuestas.filter((e) => {
+    const coincideNombre = e.nombre
+      .toLowerCase()
+      .includes(filtroNombre.toLowerCase());
+
+    const coincideCategoria =
+      filtroCategoria === "todas" || e.categoria === filtroCategoria;
+
+    const coincideEstado =
+      filtroEstado === "todas" ||
+      (filtroEstado === "activa" && e.estado) ||
+      (filtroEstado === "inactiva" && !e.estado);
+
+    return coincideNombre && coincideCategoria && coincideEstado;
+  });
+
   return (
     <Container className="mt-5">
       <h1 className="mb-4">Administrar Encuestas</h1>
       <Button onClick={abrirModalCrear} className="mb-3 boton-principal">
         Crear Encuesta
       </Button>
+
+      <div className="mb-4 d-flex flex-wrap gap-3">
+        <Form.Control
+          type="text"
+          placeholder="Buscar por nombre"
+          value={filtroNombre}
+          onChange={(e) => setFiltroNombre(e.target.value)}
+          style={{ maxWidth: "200px" }}
+        />
+
+        <Form.Select
+          value={filtroCategoria}
+          onChange={(e) => setFiltroCategoria(e.target.value)}
+          style={{ maxWidth: "200px" }}
+        >
+          <option value="todas">Todas las categorías</option>
+          {categorias.map((c) => (
+            <option key={c._id} value={c.nombre}>
+              {c.nombre}
+            </option>
+          ))}
+        </Form.Select>
+
+        <Form.Select
+          value={filtroEstado}
+          onChange={(e) => setFiltroEstado(e.target.value)}
+          style={{ maxWidth: "200px" }}
+        >
+          <option value="todas">Todos los estados</option>
+          <option value="activa">Activa</option>
+          <option value="inactiva">Inactiva</option>
+        </Form.Select>
+      </div>
+
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -215,7 +270,7 @@ export default function EncuestasAdmin() {
           </tr>
         </thead>
         <tbody>
-          {encuestas.map((encuesta) => (
+          {encuestasFiltradas.map((encuesta) => (
             <tr key={encuesta._id}>
               <td>{encuesta.nombre}</td>
               <td>{encuesta.categoria}</td>
