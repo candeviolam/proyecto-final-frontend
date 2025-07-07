@@ -9,6 +9,7 @@ import {
   Container,
 } from "react-bootstrap";
 import axios from "../services/api";
+import GraficoRespuestasEncuesta from "../components/GraficoRespuestasEncuesta";
 import "../styles/global.css";
 
 export default function EncuestasAdmin() {
@@ -16,6 +17,8 @@ export default function EncuestasAdmin() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarModalGrafico, setMostrarModalGrafico] = useState(false);
+  const [encuestaSeleccionada, setEncuestaSeleccionada] = useState(null);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [encuestaActual, setEncuestaActual] = useState({
     nombre: "",
@@ -241,6 +244,16 @@ export default function EncuestasAdmin() {
                 >
                   Eliminar
                 </Button>
+                <Button
+                  variant="outline-info"
+                  size="sm"
+                  onClick={() => {
+                    setEncuestaSeleccionada(encuesta._id);
+                    setMostrarModalGrafico(true);
+                  }}
+                >
+                  Ver Gráfica
+                </Button>
               </td>
             </tr>
           ))}
@@ -425,6 +438,21 @@ export default function EncuestasAdmin() {
             Guardar
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={mostrarModalGrafico}
+        onHide={() => setMostrarModalGrafico(false)}
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Respuestas de la Encuesta</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {encuestaSeleccionada && (
+            <GraficoRespuestasEncuesta encuestaId={encuestaSeleccionada} />
+          )}
+        </Modal.Body>
       </Modal>
     </Container>
   );
