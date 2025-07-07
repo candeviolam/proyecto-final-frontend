@@ -87,13 +87,19 @@ const Encuesta = () => {
   const manejarEnvio = async (e) => {
     e.preventDefault();
 
+    // Validar email si fue ingresado
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Por favor, ingresá un email válido.");
+      return;
+    }
+
     const respuestasFormateadas = encuesta.preguntas.map((preg, i) => ({
       pregunta: preg.pregunta,
       respuesta: respuestas[i] || "",
     }));
 
     try {
-      const resp = await axios.post(`/encuesta/${id}/responder`, {
+      await axios.post(`/encuesta/${id}/responder`, {
         email: email || null,
         respuestas: respuestasFormateadas,
       });
