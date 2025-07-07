@@ -18,6 +18,7 @@ export default function CategoriasAdmin() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [categoriaActual, setCategoriaActual] = useState({ nombre: "" });
+  const [errorFormulario, setErrorFormulario] = useState("");
 
   //Obtener categorías
   useEffect(() => {
@@ -53,6 +54,13 @@ export default function CategoriasAdmin() {
 
   //Guardar categoría
   const guardarCategoria = async () => {
+    if (!categoriaActual.nombre || categoriaActual.nombre.trim().length < 3) {
+      setErrorFormulario(
+        "El nombre de la categoría debe tener al menos 3 caracteres."
+      );
+      return;
+    }
+
     try {
       if (modoEdicion) {
         await axios.put(
@@ -70,9 +78,12 @@ export default function CategoriasAdmin() {
         });
       }
       setMostrarModal(false);
+      setErrorFormulario("");
       obtenerCategorias();
-    } catch {
-      setError("Error al guardar la categoría");
+    } catch (error) {
+      const mensaje =
+        error.response?.data?.message || "Error al guardar la categoría";
+      setErrorFormulario(mensaje);
     }
   };
 
@@ -180,7 +191,13 @@ export default function CategoriasAdmin() {
       </Table>
 
       {/*Modal Crear/Editar*/}
-      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
+      <Modal
+        show={mostrarModal}
+        onHide={() => {
+          setMostrarModal(false);
+          setErrorFormulario("");
+        }}
+      >
         <Modal.Header closeButton>
           <Modal.Title>
             {modoEdicion ? "Editar Categoría" : "Crear Categoría"}
@@ -202,9 +219,21 @@ export default function CategoriasAdmin() {
               />
             </Form.Group>
           </Form>
+
+          {errorFormulario && (
+            <Alert variant="danger" className="mt-2">
+              {errorFormulario}
+            </Alert>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setMostrarModal(false);
+              setErrorFormulario("");
+            }}
+          >
             Cancelar
           </Button>
           <Button className="boton-principal" onClick={guardarCategoria}>

@@ -22,8 +22,8 @@ export default function EncuestasAdmin() {
     categoria: "",
     preguntas: [],
   });
-
   const [categorias, setCategorias] = useState([]);
+  const [errorFormulario, setErrorFormulario] = useState("");
 
   // Obtener categorías
   useEffect(() => {
@@ -75,6 +75,22 @@ export default function EncuestasAdmin() {
 
   //Manejar creación o edición
   const guardarEncuesta = async () => {
+    // Validaciones
+    if (!encuestaActual.nombre || encuestaActual.nombre.trim().length < 5) {
+      setErrorFormulario("El nombre debe tener al menos 5 caracteres.");
+      return;
+    }
+
+    if (!encuestaActual.categoria || encuestaActual.categoria.trim() === "") {
+      setErrorFormulario("Debe seleccionar una categoría.");
+      return;
+    }
+
+    if (!encuestaActual.preguntas || encuestaActual.preguntas.length === 0) {
+      setErrorFormulario("Debe agregar al menos una pregunta.");
+      return;
+    }
+
     try {
       if (modoEdicion) {
         await axios.put(
@@ -91,18 +107,11 @@ export default function EncuestasAdmin() {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
       }
-      setError("");
       setMostrarModal(false);
+      setErrorFormulario("");
       obtenerEncuestas();
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        // Mostrar primer mensaje de validación
-        setError(err.response.data.errors[0].msg);
-      } else if (err.response?.data?.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Error al guardar encuesta");
-      }
+    } catch {
+      setErrorFormulario("Error al guardar la encuesta.");
     }
   };
 
@@ -288,6 +297,12 @@ export default function EncuestasAdmin() {
                 }
               />
             </Form.Group>
+
+            {errorFormulario && (
+              <Alert variant="danger" className="mt-2">
+                {errorFormulario}
+              </Alert>
+            )}
           </Form>
         </Modal.Body>
 
