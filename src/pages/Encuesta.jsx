@@ -48,7 +48,11 @@ const Encuesta = () => {
         setEncuesta(respuesta.data);
         setRespuestas(new Array(respuesta.data.preguntas.length).fill("")); //Inicializa respuestas vacías
       } catch (err) {
-        setErrorCarga("No se pudo cargar la encuesta");
+        if (err.response?.status === 404) {
+          setErrorCarga("La encuesta no existe o fue eliminada.");
+        } else {
+          setErrorCarga("Error al cargar la encuesta.");
+        }
       } finally {
         setCargando(false);
       }

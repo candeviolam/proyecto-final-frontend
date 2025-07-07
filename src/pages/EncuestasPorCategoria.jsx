@@ -18,31 +18,46 @@ export default function EncuestasPorCategoria() {
   const [encuestas, setEncuestas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+  const [categoriaExiste, setCategoriaExiste] = useState(true);
 
-  //Función que limpia el título
+  // Capitalizar nombre
+  const capitalizar = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1);
+
+  // Función que limpia el título
   const limpiarTitulo = (nombre) => {
     if (!nombre) return "";
     const limpio = nombre.replace(/^Encuesta (de|sobre)\s*/i, "").trim();
     return limpio.charAt(0).toUpperCase() + limpio.slice(1);
   };
 
-  const capitalizar = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1);
-
   useEffect(() => {
     const obtener = async () => {
       setCargando(true);
       try {
-        // Traer todas las encuestas activas
-        const respuesta = await axios.get("/encuesta/activas");
-        // Filtrar por categoría
-        const filtradas = respuesta.data.filter(
-          (encuesta) =>
-            encuesta.categoria?.toLowerCase() === nombre.toLowerCase()
+        // Primero traer todas las categorías activas
+        const respCategorias = await axios.get("/categoria/obtener");
+        const categoriasActivas = respCategorias.data.filter((c) => c.estado);
+
+        const existe = categoriasActivas.some(
+          (c) => c.nombre.toLowerCase() === nombre.toLowerCase()
+        );
+
+        if (!existe) {
+          setCategoriaExiste(false);
+          setCargando(false);
+          return;
+        }
+
+        // Si existe, traer encuestas
+        const respEncuestas = await axios.get("/encuesta/activas");
+        const filtradas = respEncuestas.data.filter(
+          (enc) => enc.categoria?.toLowerCase() === nombre.toLowerCase()
         );
         setEncuestas(filtradas);
         setError("");
+        setCategoriaExiste(true);
       } catch (err) {
-        setError("Error al obtener las encuestas");
+        setError("Error al obtener datos");
       } finally {
         setCargando(false);
       }
@@ -68,6 +83,23 @@ export default function EncuestasPorCategoria() {
         style={{ minHeight: "50vh" }}
       >
         <Alert variant="danger">{error}</Alert>
+      </Container>
+    );
+
+  if (!categoriaExiste)
+    return (
+      <Container
+        className="d-flex flex-column align-items-center justify-content-center text-center"
+        style={{ minHeight: "60vh" }}
+      >
+        <h2 className="mb-3">Categoría no encontrada</h2>
+        <p>
+          La categoría <strong>{capitalizar(nombre)}</strong> no existe o fue
+          eliminada.
+        </p>
+        <Button as={Link} to="/" className="boton-principal mt-3">
+          Volver al inicio
+        </Button>
       </Container>
     );
 
