@@ -114,6 +114,7 @@ body,
   font-size: 1.15rem;
 }
 
+/*Agregar pregunta en el formulario para crear encuesta*/
 .boton-agregar-pregunta {
   background-color: var(--color-accent);
   border: none;
@@ -122,6 +123,26 @@ body,
 
 .boton-agregar-pregunta:hover {
   background-color: #9171ca;
+}
+
+/*Tabla de encuestas*/
+.tabla-responsive {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 1rem;
+}
+
+.tabla-responsive table {
+  scroll-snap-align: start;
+}
+
+.tabla-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tabla-responsive::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 4px;
 }
 
 @media (max-width: 768px) {

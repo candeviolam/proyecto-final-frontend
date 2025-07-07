@@ -58,7 +58,15 @@ export default function GraficoRespuestasEncuesta({ encuestaId }) {
     }
   }, [encuestaId]);
 
-  if (cargando) return <p>Cargando gráfico...</p>;
+  if (!cargando && data.length === 0)
+    return (
+      <div className="text-center p-4">
+        <p style={{ fontSize: "1.1rem", color: "#555" }}>
+          📊 No hay respuestas registradas para esta encuesta aún.
+        </p>
+      </div>
+    );
+
   if (error) return <p>{error}</p>;
 
   return (

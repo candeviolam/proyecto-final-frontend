@@ -13,6 +13,7 @@ import EncuestasPorCategoria from "./pages/EncuestasPorCategoria";
 import ComponenteNavbar from "./components/Navbar";
 import TodasLasEncuestas from "./components/TodasLasEncuestas";
 import NoEncontrado from "./components/NoEncontrado";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import "./styles/global.css";
 import "./styles/index.css";
 

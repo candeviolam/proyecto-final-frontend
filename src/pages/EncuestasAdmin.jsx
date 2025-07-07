@@ -7,9 +7,11 @@ import {
   Alert,
   Spinner,
   Container,
+  Dropdown,
 } from "react-bootstrap";
 import axios from "../services/api";
 import GraficoRespuestasEncuesta from "../components/GraficoRespuestasEncuesta";
+import TablaRespuestas from "../components/TablaRespuestas";
 import "../styles/global.css";
 
 export default function EncuestasAdmin() {
@@ -28,10 +30,10 @@ export default function EncuestasAdmin() {
   const [categorias, setCategorias] = useState([]);
   const [errorFormulario, setErrorFormulario] = useState("");
   const [preguntasTexto, setPreguntasTexto] = useState("");
-  // Filtros
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [filtroEstado, setFiltroEstado] = useState("todas");
+  const [mostrarModalRespuestas, setMostrarModalRespuestas] = useState(false);
 
   // Obtener categorías
   useEffect(() => {
@@ -260,60 +262,68 @@ export default function EncuestasAdmin() {
         </Form.Select>
       </div>
 
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {encuestasFiltradas.map((encuesta) => (
-            <tr key={encuesta._id}>
-              <td>{encuesta.nombre}</td>
-              <td>{encuesta.categoria}</td>
-              <td>{encuesta.estado ? "Activa" : "Inactiva"}</td>
-              <td>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  onClick={() => abrirModalEditar(encuesta)}
-                  className="me-2"
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="outline-warning"
-                  size="sm"
-                  onClick={() => cambiarEstado(encuesta._id)}
-                  className="me-2"
-                >
-                  {encuesta.estado ? "Inactivar" : "Activar"}
-                </Button>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => eliminarEncuesta(encuesta._id)}
-                >
-                  Eliminar
-                </Button>
-                <Button
-                  variant="outline-info"
-                  size="sm"
-                  onClick={() => {
-                    setEncuestaSeleccionada(encuesta._id);
-                    setMostrarModalGrafico(true);
-                  }}
-                >
-                  Ver Gráfica
-                </Button>
-              </td>
+      <div className="tabla-responsive">
+        <Table striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {encuestasFiltradas.map((encuesta) => (
+              <tr key={encuesta._id}>
+                <td>{encuesta.nombre}</td>
+                <td>{encuesta.categoria}</td>
+                <td>{encuesta.estado ? "Activa" : "Inactiva"}</td>
+                <td>
+                  <Dropdown>
+                    <Dropdown.Toggle variant="light" size="sm">
+                      <i className="bi bi-three-dots"></i>
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => abrirModalEditar(encuesta)}>
+                        <i className="bi bi-pencil me-2"></i> Editar
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => cambiarEstado(encuesta._id)}
+                      >
+                        <i className="bi bi-toggle-on me-2"></i>
+                        {encuesta.estado ? "Inactivar" : "Activar"}
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => eliminarEncuesta(encuesta._id)}
+                      >
+                        <i className="bi bi-trash me-2"></i> Eliminar
+                      </Dropdown.Item>
+                      <Dropdown.Divider />
+                      <Dropdown.Item
+                        onClick={() => {
+                          setEncuestaSeleccionada(encuesta._id);
+                          setMostrarModalGrafico(true);
+                        }}
+                      >
+                        <i className="bi bi-bar-chart me-2"></i> Ver Gráfica
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => {
+                          setEncuestaSeleccionada(encuesta._id);
+                          setMostrarModalRespuestas(true);
+                        }}
+                      >
+                        <i className="bi bi-list-check me-2"></i> Ver Respuestas
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
 
       {/*Modal Crear/Editar*/}
       <Modal
@@ -506,6 +516,24 @@ export default function EncuestasAdmin() {
         <Modal.Body>
           {encuestaSeleccionada && (
             <GraficoRespuestasEncuesta encuestaId={encuestaSeleccionada} />
+          )}
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={mostrarModalRespuestas}
+        onHide={() => setMostrarModalRespuestas(false)}
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Respuestas de la encuesta</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {encuestaSeleccionada && (
+            <TablaRespuestas
+              encuestaId={encuestaSeleccionada}
+              onClose={() => setMostrarModalRespuestas(false)}
+            />
           )}
         </Modal.Body>
       </Modal>
