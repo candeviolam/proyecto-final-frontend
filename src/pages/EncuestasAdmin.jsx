@@ -24,6 +24,7 @@ export default function EncuestasAdmin() {
   });
   const [categorias, setCategorias] = useState([]);
   const [errorFormulario, setErrorFormulario] = useState("");
+  const [preguntasTexto, setPreguntasTexto] = useState("");
 
   // Obtener categorías
   useEffect(() => {
@@ -63,6 +64,7 @@ export default function EncuestasAdmin() {
   const abrirModalCrear = () => {
     setModoEdicion(false);
     setEncuestaActual({ nombre: "", categoria: "", preguntas: [] });
+    setPreguntasTexto("");
     setMostrarModal(true);
   };
 
@@ -70,6 +72,9 @@ export default function EncuestasAdmin() {
   const abrirModalEditar = (encuesta) => {
     setModoEdicion(true);
     setEncuestaActual(encuesta);
+    setPreguntasTexto(
+      encuesta.preguntas?.map((p) => p.pregunta).join("\n") || ""
+    );
     setMostrarModal(true);
   };
 
@@ -86,7 +91,17 @@ export default function EncuestasAdmin() {
       return;
     }
 
-    if (!encuestaActual.preguntas || encuestaActual.preguntas.length === 0) {
+    const preguntasProcesadas = preguntasTexto
+      .split("\n")
+      .filter((t) => t.trim() !== "")
+      .map((texto) => ({
+        tipo: "texto",
+        pregunta: texto.trim(),
+        opciones: [],
+      }));
+
+    //Validación
+    if (preguntasProcesadas.length === 0) {
       setErrorFormulario("Debe agregar al menos una pregunta.");
       return;
     }
@@ -95,7 +110,10 @@ export default function EncuestasAdmin() {
       if (modoEdicion) {
         await axios.put(
           `/encuesta/modificar/${encuestaActual._id}`,
-          encuestaActual,
+          {
+            ...encuestaActual,
+            preguntas: preguntasProcesadas,
+          },
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -103,10 +121,20 @@ export default function EncuestasAdmin() {
           }
         );
       } else {
-        await axios.post("/encuesta/crear", encuestaActual, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        await axios.post(
+          "/encuesta/crear",
+          {
+            ...encuestaActual,
+            preguntas: preguntasProcesadas,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
       }
+
       setMostrarModal(false);
       setErrorFormulario("");
       obtenerEncuestas();
@@ -222,7 +250,10 @@ export default function EncuestasAdmin() {
       {/*Modal Crear/Editar*/}
       <Modal
         show={mostrarModal}
-        onHide={() => setMostrarModal(false)}
+        onHide={() => {
+          setMostrarModal(false);
+          setErrorFormulario("");
+        }}
         size="lg"
       >
         <Modal.Header closeButton>
@@ -275,28 +306,108 @@ export default function EncuestasAdmin() {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Preguntas (una por línea)</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={4}
-                value={encuestaActual.preguntas
-                  .map((p) => p.pregunta)
-                  .join("\n")}
-                onChange={(e) =>
-                  setEncuestaActual({
-                    ...encuestaActual,
-                    preguntas: e.target.value
-                      .split("\n")
-                      .filter((t) => t.trim() !== "")
-                      .map((texto) => ({
-                        tipo: "texto",
-                        pregunta: texto,
-                        opciones: [],
-                      })),
-                  })
-                }
-              />
+              <Form.Label>Preguntas</Form.Label>
+
+              {encuestaActual.preguntas.map((pregunta, index) => (
+                <div
+                  key={index}
+                  className="border rounded p-3 mb-3"
+                  style={{ background: "#f8f9fa" }}
+                >
+                  <Form.Label>Pregunta {index + 1}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Escribe la pregunta"
+                    value={pregunta.pregunta}
+                    className="mb-2"
+                    onChange={(e) => {
+                      const nuevas = [...encuestaActual.preguntas];
+                      nuevas[index].pregunta = e.target.value;
+                      setEncuestaActual({
+                        ...encuestaActual,
+                        preguntas: nuevas,
+                      });
+                    }}
+                  />
+
+                  <Form.Select
+                    value={pregunta.tipo}
+                    className="mb-2"
+                    onChange={(e) => {
+                      const nuevas = [...encuestaActual.preguntas];
+                      nuevas[index].tipo = e.target.value;
+                      // Si es texto o escala, limpiamos opciones
+                      if (
+                        e.target.value === "texto" ||
+                        e.target.value === "escala"
+                      ) {
+                        nuevas[index].opciones = [];
+                      }
+                      setEncuestaActual({
+                        ...encuestaActual,
+                        preguntas: nuevas,
+                      });
+                    }}
+                  >
+                    <option value="texto">Texto libre</option>
+                    <option value="opcionUnica">Opción única</option>
+                    <option value="opcionMultiple">Opción múltiple</option>
+                    <option value="escala">Escala 0-10</option>
+                  </Form.Select>
+
+                  {(pregunta.tipo === "opcionUnica" ||
+                    pregunta.tipo === "opcionMultiple") && (
+                    <Form.Control
+                      type="text"
+                      placeholder="Opciones separadas por coma"
+                      value={pregunta.opciones.join(", ")}
+                      onChange={(e) => {
+                        const nuevas = [...encuestaActual.preguntas];
+                        nuevas[index].opciones = e.target.value
+                          .split(",")
+                          .map((o) => o.trim())
+                          .filter((o) => o !== "");
+                        setEncuestaActual({
+                          ...encuestaActual,
+                          preguntas: nuevas,
+                        });
+                      }}
+                    />
+                  )}
+
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => {
+                      const nuevas = [...encuestaActual.preguntas];
+                      nuevas.splice(index, 1);
+                      setEncuestaActual({
+                        ...encuestaActual,
+                        preguntas: nuevas,
+                      });
+                    }}
+                  >
+                    Eliminar pregunta
+                  </Button>
+                </div>
+              ))}
             </Form.Group>
+
+            <Button
+              className="boton-agregar-pregunta"
+              onClick={() =>
+                setEncuestaActual({
+                  ...encuestaActual,
+                  preguntas: [
+                    ...encuestaActual.preguntas,
+                    { pregunta: "", tipo: "texto", opciones: [] },
+                  ],
+                })
+              }
+            >
+              + Agregar pregunta
+            </Button>
 
             {errorFormulario && (
               <Alert variant="danger" className="mt-2">

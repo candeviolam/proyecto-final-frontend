@@ -114,6 +114,16 @@ body,
   font-size: 1.15rem;
 }
 
+.boton-agregar-pregunta {
+  background-color: var(--color-accent);
+  border: none;
+  color: #3b3838;
+}
+
+.boton-agregar-pregunta:hover {
+  background-color: #9171ca;
+}
+
 @media (max-width: 768px) {
   :root {
     --navbar-height: 80px;
