@@ -91,10 +91,18 @@ export default function EncuestasAdmin() {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
       }
+      setError("");
       setMostrarModal(false);
       obtenerEncuestas();
     } catch (err) {
-      setError("Error al guardar encuesta");
+      if (err.response?.data?.errors) {
+        // Mostrar primer mensaje de validación
+        setError(err.response.data.errors[0].msg);
+      } else if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Error al guardar encuesta");
+      }
     }
   };
 
@@ -214,6 +222,12 @@ export default function EncuestasAdmin() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {error && (
+            <Alert variant="danger" className="mt-2">
+              {error}
+            </Alert>
+          )}
+
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Nombre</Form.Label>
