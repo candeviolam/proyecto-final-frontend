@@ -384,6 +384,22 @@ export default function EncuestasAdmin() {
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Descripción breve de la encuesta"
+                value={encuestaActual.descripcion || ""}
+                onChange={(e) =>
+                  setEncuestaActual({
+                    ...encuestaActual,
+                    descripcion: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label>Preguntas</Form.Label>
 
               {encuestaActual.preguntas.map((pregunta, index) => (

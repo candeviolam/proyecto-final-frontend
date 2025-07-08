@@ -113,14 +113,18 @@ const Home = () => {
               <div className="carousel-slide-content d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div className="carousel-text p-4">
                   <h3>{limpiarTitulo(encuesta.nombre)}</h3>
-                  <p>
-                    {encuesta.descripcion || (
+                  <p className="descripcion-encuesta">
+                    {encuesta.descripcion &&
+                    encuesta.descripcion.trim() !== "" ? (
+                      encuesta.descripcion
+                    ) : (
                       <>
                         Participá en esta encuesta sobre{" "}
                         <strong>{encuesta.categoria}</strong>.
                       </>
                     )}
                   </p>
+
                   <Button
                     as={Link}
                     to={`/encuesta/${encuesta._id}`}

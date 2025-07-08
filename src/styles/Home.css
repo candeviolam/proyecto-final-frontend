@@ -56,6 +56,12 @@
   background-position: center;
 }
 
+.descripcion-encuesta {
+  font-size: 1.1rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 768px) {
   .carousel-slide-content {
     flex-direction: column;
