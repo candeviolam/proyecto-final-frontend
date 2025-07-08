@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SidebarAdmin from "../components/SidebarAdmin";
 import TarjetaResumen from "../components/TarjetaResumen";
 import GraficoRespuestas from "../components/GraficoRespuestas";
+import EstadisticasAdmin from "../components/EstadisticasAdmin";
 import "../styles/admin.css";
 
 export default function Admin() {
@@ -25,7 +26,19 @@ export default function Admin() {
 
         <h1 className="text-3xl font-bold mb-6">Panel de administración</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <EstadisticasAdmin />
+
+        <section className="mt-10">
+          <h2 className="text-xl font-bold mb-4">Respuestas de la semana</h2>
+          <GraficoRespuestas />
+        </section>
+      </main>
+    </div>
+  );
+}
+
+/*
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <TarjetaResumen
             titulo="Encuestas"
             cantidad={12}
@@ -49,12 +62,4 @@ export default function Admin() {
             textoOscuro
           />
         </div>
-
-        <section className="mt-10">
-          <h2 className="text-xl font-bold mb-4">Respuestas de la semana</h2>
-          <GraficoRespuestas />
-        </section>
-      </main>
-    </div>
-  );
-}
+ */
