@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Table,
   Button,
@@ -224,6 +225,15 @@ export default function EncuestasAdmin() {
 
   return (
     <Container className="mt-5">
+      <Button
+        variant="outline-secondary"
+        as={Link}
+        to="/admin"
+        className="mb-3"
+      >
+        ← Volver al Panel Admin
+      </Button>
+
       <h1 className="mb-4">Administrar Encuestas</h1>
       <Button onClick={abrirModalCrear} className="mb-3 boton-principal">
         Crear Encuesta
