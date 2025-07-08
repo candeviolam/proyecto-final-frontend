@@ -12,7 +12,7 @@ import CategoriasAdmin from "./pages/CategoriasAdmin";
 import EncuestasPorCategoria from "./pages/EncuestasPorCategoria";
 import ComponenteNavbar from "./components/Navbar";
 import TodasLasEncuestas from "./components/TodasLasEncuestas";
-import NoEncontrado from "./components/NoEncontrado";
+import Pagina404 from "./components/Pagina404";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./styles/global.css";
 import "./styles/index.css";
@@ -65,7 +65,7 @@ function App() {
         />
         <Route path="/categoria/:nombre" element={<EncuestasPorCategoria />} />
         <Route path="/todas" element={<TodasLasEncuestas />} />
-        <Route path="*" element={<NoEncontrado />} />
+        <Route path="*" element={<Pagina404 />} />
       </Routes>
     </BrowserRouter>
   );
