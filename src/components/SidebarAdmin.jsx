@@ -4,7 +4,6 @@ import "../styles/admin.css";
 export default function SidebarAdmin({ mostrar, cerrar }) {
   return (
     <aside className={`sidebar ${mostrar ? "mostrar" : ""}`}>
-      {/*Solo se ve el botón de cerrar en pantallas chicas*/}
       <button className="cerrar-sidebar solo-mobile" onClick={cerrar}>
         ✖
       </button>

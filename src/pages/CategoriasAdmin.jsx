@@ -21,7 +21,6 @@ export default function CategoriasAdmin() {
   const [categoriaActual, setCategoriaActual] = useState({ nombre: "" });
   const [errorFormulario, setErrorFormulario] = useState("");
 
-  //Obtener categorías
   useEffect(() => {
     obtenerCategorias();
   }, []);
@@ -29,36 +28,31 @@ export default function CategoriasAdmin() {
   const obtenerCategorias = async () => {
     setCargando(true);
     try {
-      const respuesta = await axios.get("/categoria/obtener");
-      setCategorias(respuesta.data);
+      const resp = await axios.get("/categoria/obtener");
+      setCategorias(resp.data);
       setError("");
-    } catch (err) {
+    } catch {
       setError("Error al obtener las categorías");
     } finally {
       setCargando(false);
     }
   };
 
-  //Abrir modal para crear
   const abrirModalCrear = () => {
     setModoEdicion(false);
     setCategoriaActual({ nombre: "" });
     setMostrarModal(true);
   };
 
-  //Abrir modal para editar
   const abrirModalEditar = (categoria) => {
     setModoEdicion(true);
     setCategoriaActual(categoria);
     setMostrarModal(true);
   };
 
-  //Guardar categoría
   const guardarCategoria = async () => {
     if (!categoriaActual.nombre || categoriaActual.nombre.trim().length < 3) {
-      setErrorFormulario(
-        "El nombre de la categoría debe tener al menos 3 caracteres."
-      );
+      setErrorFormulario("El nombre debe tener al menos 3 caracteres.");
       return;
     }
 
@@ -88,7 +82,6 @@ export default function CategoriasAdmin() {
     }
   };
 
-  //Activar/Inactivar categoría
   const cambiarEstado = async (id) => {
     try {
       await axios.put(
@@ -104,7 +97,6 @@ export default function CategoriasAdmin() {
     }
   };
 
-  //Eliminar categoría
   const eliminarCategoria = async (id) => {
     if (!window.confirm("¿Está seguro que desea eliminar esta categoría?"))
       return;
@@ -124,9 +116,7 @@ export default function CategoriasAdmin() {
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: "50vh" }}
       >
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Cargando...</span>
-        </Spinner>
+        <Spinner animation="border" />
       </Container>
     );
 
@@ -136,9 +126,7 @@ export default function CategoriasAdmin() {
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: "50vh" }}
       >
-        <Alert variant="danger" className="text-center">
-          {error}
-        </Alert>
+        <Alert variant="danger">{error}</Alert>
       </Container>
     );
 
@@ -200,7 +188,6 @@ export default function CategoriasAdmin() {
         </tbody>
       </Table>
 
-      {/*Modal Crear/Editar*/}
       <Modal
         show={mostrarModal}
         onHide={() => {
@@ -215,7 +202,7 @@ export default function CategoriasAdmin() {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3">
+            <Form.Group>
               <Form.Label>Nombre</Form.Label>
               <Form.Control
                 type="text"

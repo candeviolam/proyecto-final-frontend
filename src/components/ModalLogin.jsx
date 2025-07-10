@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import axios from "../services/api";
 
@@ -14,14 +14,14 @@ const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
       const respuesta = await axios.post("/auth/login", { email, contraseña });
       localStorage.setItem("token", respuesta.data.token);
 
-      //Extraer el rol desde el token para que el frontend sepa si ese token corresponde a un admin o no
       const datosToken = JSON.parse(atob(respuesta.data.token.split(".")[1]));
       localStorage.setItem("rol", datosToken.rol);
 
       if (recordarme) {
         localStorage.setItem("recordarme", "true");
       }
-      setAutenticado(true); //Establecer el estado de autenticación
+
+      setAutenticado(true);
       handleClose();
       window.location.reload();
     } catch (err) {
@@ -71,7 +71,7 @@ const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
             Iniciar Sesión
           </Button>
           <p className="mb-3">
-            ¿Aún no tiene cuenta?{""}
+            ¿Aún no tiene cuenta?{" "}
             <Button variant="link" onClick={abrirRegistro}>
               Crear cuenta
             </Button>

@@ -87,21 +87,32 @@ export default function TodasLasEncuestas() {
           </Row>
 
           {/* Controles de paginación */}
+          {/* Controles de paginación */}
           <div className="d-flex justify-content-center mt-4 gap-2 flex-wrap">
             {paginaActual > 1 && (
-              <span
-                style={{ cursor: "pointer", fontSize: "1.3rem", color: "#666" }}
+              <button
+                type="button"
                 onClick={() => setPaginaActual(paginaActual - 1)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "1.3rem",
+                  color: "#666",
+                }}
               >
                 &lt;
-              </span>
+              </button>
             )}
 
             {Array.from({ length: totalPaginas }, (_, i) => (
-              <span
+              <button
                 key={i}
+                type="button"
                 onClick={() => setPaginaActual(i + 1)}
                 style={{
+                  background: "none",
+                  border: "none",
                   cursor: "pointer",
                   fontSize: "1.2rem",
                   color: paginaActual === i + 1 ? "#4caf50" : "#555",
@@ -111,18 +122,26 @@ export default function TodasLasEncuestas() {
                       : "none",
                   padding: "0 6px",
                 }}
+                aria-current={paginaActual === i + 1 ? "page" : undefined}
               >
                 {i + 1}
-              </span>
+              </button>
             ))}
 
             {paginaActual < totalPaginas && (
-              <span
-                style={{ cursor: "pointer", fontSize: "1.3rem", color: "#666" }}
+              <button
+                type="button"
                 onClick={() => setPaginaActual(paginaActual + 1)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "1.3rem",
+                  color: "#666",
+                }}
               >
                 &gt;
-              </span>
+              </button>
             )}
           </div>
         </>

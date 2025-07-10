@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import SidebarAdmin from "../components/SidebarAdmin";
-import TarjetaResumen from "../components/TarjetaResumen";
 import GraficoRespuestas from "../components/GraficoRespuestas";
 import EstadisticasAdmin from "../components/EstadisticasAdmin";
 import "../styles/admin.css";
@@ -36,30 +34,3 @@ export default function Admin() {
     </div>
   );
 }
-
-/*
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <TarjetaResumen
-            titulo="Encuestas"
-            cantidad={12}
-            claseColor="bg-color-primary"
-          />
-          <TarjetaResumen
-            titulo="Categorías"
-            cantidad={5}
-            claseColor="bg-color-secondary"
-            textoOscuro
-          />
-          <TarjetaResumen
-            titulo="Respuestas"
-            cantidad={87}
-            claseColor="bg-color-success"
-          />
-          <TarjetaResumen
-            titulo="Usuarios únicos"
-            cantidad={34}
-            claseColor="bg-color-accent"
-            textoOscuro
-          />
-        </div>
- */

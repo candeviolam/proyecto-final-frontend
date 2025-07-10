@@ -6,39 +6,31 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Home.css";
 import "../styles/global.css";
 
-const Home = () => {
+export default function Home() {
   const [logueada, setLogueada] = useState(false);
   const [encuestasDestacadas, setEncuestasDestacadas] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [mostrarScroll, setMostrarScroll] = useState(false);
 
-  // Obtener token para mostrar mensaje si hay sesión
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    if (localStorage.getItem("token")) {
       setLogueada(true);
     }
   }, []);
 
-  //Obtener encuestas activas aleatoriamente
   useEffect(() => {
     const obtenerDestacadas = async () => {
       try {
         const resp = await axios.get("/encuesta/activas");
-        const todas = resp.data;
-
-        // Mezclar el array y tomar 3
-        const mezcladas = todas.sort(() => 0.5 - Math.random());
+        const mezcladas = resp.data.sort(() => 0.5 - Math.random());
         setEncuestasDestacadas(mezcladas.slice(0, 3));
       } catch (error) {
         console.error("Error al obtener encuestas destacadas", error);
       }
     };
-
     obtenerDestacadas();
   }, []);
 
-  // Obtener categorías dinámicamente
   useEffect(() => {
     const obtenerCategorias = async () => {
       try {
@@ -49,24 +41,19 @@ const Home = () => {
         console.error("Error al obtener categorías", error);
       }
     };
-
     obtenerCategorias();
   }, []);
 
-  // Mostrar botón scroll-top
   useEffect(() => {
     const manejarScroll = () => {
       setMostrarScroll(window.scrollY > 100);
     };
-
     window.addEventListener("scroll", manejarScroll);
     return () => window.removeEventListener("scroll", manejarScroll);
   }, []);
 
-  // Para obtener imagen de fondo
   const obtenerImagenFondo = (nombreEncuesta) => {
     const nombre = nombreEncuesta?.toLowerCase() || "";
-
     if (nombre.includes("bienestar")) return "/fondo-bienestar.jpeg";
     if (nombre.includes("lectura")) return "/fondo-libros.jpeg";
     if (nombre.includes("géneros literarios")) return "/fondo-libros.jpeg";
@@ -85,7 +72,6 @@ const Home = () => {
       return "/fondo-mascotas.jpeg";
     if (nombre.includes("alimentación") || nombre.includes("recetas"))
       return "/fondo-alimentacion.jpeg";
-
     return "/fondo-generico.jpg";
   };
 
@@ -107,24 +93,17 @@ const Home = () => {
 
       <section className="encuestas-destacadas mt-5">
         <h2 className="titulo-categorias">Encuestas destacadas</h2>
-        <Carousel interval={5000} fade indicators={true}>
+        <Carousel interval={5000} fade indicators>
           {encuestasDestacadas.map((encuesta) => (
             <Carousel.Item key={encuesta._id}>
               <div className="carousel-slide-content d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div className="carousel-text p-4">
                   <h3>{limpiarTitulo(encuesta.nombre)}</h3>
                   <p className="descripcion-encuesta">
-                    {encuesta.descripcion &&
-                    encuesta.descripcion.trim() !== "" ? (
-                      encuesta.descripcion
-                    ) : (
-                      <>
-                        Participá en esta encuesta sobre{" "}
-                        <strong>{encuesta.categoria}</strong>.
-                      </>
-                    )}
+                    {encuesta.descripcion && encuesta.descripcion.trim() !== ""
+                      ? encuesta.descripcion
+                      : `Participá en esta encuesta sobre ${encuesta.categoria}.`}
                   </p>
-
                   <Button
                     as={Link}
                     to={`/encuesta/${encuesta._id}`}
@@ -179,6 +158,4 @@ const Home = () => {
       )}
     </Container>
   );
-};
-
-export default Home;
+}

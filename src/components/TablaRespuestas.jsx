@@ -19,9 +19,9 @@ export default function TablaRespuestas({ encuestaId, onClose }) {
         setRespuestas(resp.data);
       } catch (err) {
         console.error(err);
-        if (err.response && err.response.status === 404) {
+        if (err.response?.status === 404) {
           setError("No se encontraron respuestas para esta encuesta.");
-        } else if (err.response && err.response.status === 401) {
+        } else if (err.response?.status === 401) {
           setError("No autorizado. Vuelva a iniciar sesión.");
         } else {
           setError("Error al cargar las respuestas.");

@@ -10,7 +10,7 @@ import {
   FaUserFriends,
   FaPoll,
 } from "react-icons/fa";
-import "../styles/estadisticas.css";
+import "../styles/admin.css";
 
 export default function EstadisticasAdmin() {
   const [estadisticas, setEstadisticas] = useState(null);

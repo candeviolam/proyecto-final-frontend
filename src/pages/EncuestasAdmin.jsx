@@ -30,13 +30,11 @@ export default function EncuestasAdmin() {
   });
   const [categorias, setCategorias] = useState([]);
   const [errorFormulario, setErrorFormulario] = useState("");
-  const [preguntasTexto, setPreguntasTexto] = useState("");
   const [filtroNombre, setFiltroNombre] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [filtroEstado, setFiltroEstado] = useState("todas");
   const [mostrarModalRespuestas, setMostrarModalRespuestas] = useState(false);
 
-  // Obtener categorías
   useEffect(() => {
     const obtenerCategorias = async () => {
       try {
@@ -47,71 +45,48 @@ export default function EncuestasAdmin() {
         console.error("Error al obtener categorías", error);
       }
     };
-
     obtenerCategorias();
   }, []);
 
-  //Obtener encuestas
   useEffect(() => {
     obtenerEncuestas();
   }, []);
 
   const obtenerEncuestas = async () => {
     setCargando(true);
-
     try {
-      const respuesta = await axios.get("/encuesta/obtener");
-      setEncuestas(respuesta.data);
+      const resp = await axios.get("/encuesta/obtener");
+      setEncuestas(resp.data);
       setError("");
-    } catch (err) {
+    } catch {
       setError("Error al obtener encuestas");
     } finally {
       setCargando(false);
     }
   };
 
-  //Manejar apertura del modal para crear
   const abrirModalCrear = () => {
     setModoEdicion(false);
     setEncuestaActual({ nombre: "", categoria: "", preguntas: [] });
-    setPreguntasTexto("");
     setMostrarModal(true);
   };
 
-  //Manejar apertura del modal para editar
   const abrirModalEditar = (encuesta) => {
     setModoEdicion(true);
     setEncuestaActual(encuesta);
-    setPreguntasTexto(
-      encuesta.preguntas?.map((p) => p.pregunta).join("\n") || ""
-    );
     setMostrarModal(true);
   };
 
-  //Manejar creación o edición
   const guardarEncuesta = async () => {
-    // Validaciones
     if (!encuestaActual.nombre || encuestaActual.nombre.trim().length < 5) {
       setErrorFormulario("El nombre debe tener al menos 5 caracteres.");
       return;
     }
-
-    if (!encuestaActual.categoria || encuestaActual.categoria.trim() === "") {
+    if (!encuestaActual.categoria) {
       setErrorFormulario("Debe seleccionar una categoría.");
       return;
     }
-
-    const preguntasProcesadas = preguntasTexto
-      .split("\n")
-      .filter((t) => t.trim() !== "")
-      .map((texto) => ({
-        tipo: "texto",
-        pregunta: texto.trim(),
-        opciones: [],
-      }));
-
-    //Validación
-    if (preguntasProcesadas.length === 0) {
+    if (encuestaActual.preguntas.length === 0) {
       setErrorFormulario("Debe agregar al menos una pregunta.");
       return;
     }
@@ -120,31 +95,20 @@ export default function EncuestasAdmin() {
       if (modoEdicion) {
         await axios.put(
           `/encuesta/modificar/${encuestaActual._id}`,
+          encuestaActual,
           {
-            ...encuestaActual,
-            preguntas: preguntasProcesadas,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           }
         );
       } else {
         await axios.post(
           "/encuesta/crear",
+          encuestaActual,
           {
-            ...encuestaActual,
-            preguntas: preguntasProcesadas,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           }
         );
       }
-
       setMostrarModal(false);
       setErrorFormulario("");
       obtenerEncuestas();
@@ -153,7 +117,6 @@ export default function EncuestasAdmin() {
     }
   };
 
-  //Activar/Inactivar
   const cambiarEstado = async (id) => {
     try {
       await axios.put(
@@ -169,10 +132,8 @@ export default function EncuestasAdmin() {
     }
   };
 
-  //Eliminar encuesta
   const eliminarEncuesta = async (id) => {
-    if (!window.confirm("¿Está seguro que desea eliminar esta encuesta?"))
-      return;
+    if (!window.confirm("¿Está seguro que desea eliminar esta encuesta?")) return;
     try {
       await axios.delete(`/encuesta/eliminar/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -189,37 +150,30 @@ export default function EncuestasAdmin() {
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: "50vh" }}
       >
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Cargando...</span>
-        </Spinner>
+        <Spinner animation="border" />
       </Container>
     );
+
   if (error)
     return (
       <Container
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: "50vh" }}
       >
-        <Alert variant="danger" className="text-center">
-          {error}
-        </Alert>
+        <Alert variant="danger">{error}</Alert>
       </Container>
     );
 
-  // Filtrado de encuestas
   const encuestasFiltradas = encuestas.filter((e) => {
     const coincideNombre = e.nombre
       .toLowerCase()
       .includes(filtroNombre.toLowerCase());
-
     const coincideCategoria =
       filtroCategoria === "todas" || e.categoria === filtroCategoria;
-
     const coincideEstado =
       filtroEstado === "todas" ||
       (filtroEstado === "activa" && e.estado) ||
       (filtroEstado === "inactiva" && !e.estado);
-
     return coincideNombre && coincideCategoria && coincideEstado;
   });
 
@@ -247,7 +201,6 @@ export default function EncuestasAdmin() {
           onChange={(e) => setFiltroNombre(e.target.value)}
           style={{ maxWidth: "200px" }}
         />
-
         <Form.Select
           value={filtroCategoria}
           onChange={(e) => setFiltroCategoria(e.target.value)}
@@ -260,7 +213,6 @@ export default function EncuestasAdmin() {
             </option>
           ))}
         </Form.Select>
-
         <Form.Select
           value={filtroEstado}
           onChange={(e) => setFiltroEstado(e.target.value)}
@@ -283,36 +235,31 @@ export default function EncuestasAdmin() {
             </tr>
           </thead>
           <tbody>
-            {encuestasFiltradas.map((encuesta) => (
-              <tr key={encuesta._id}>
-                <td>{encuesta.nombre}</td>
-                <td>{encuesta.categoria}</td>
-                <td>{encuesta.estado ? "Activa" : "Inactiva"}</td>
+            {encuestasFiltradas.map((e) => (
+              <tr key={e._id}>
+                <td>{e.nombre}</td>
+                <td>{e.categoria}</td>
+                <td>{e.estado ? "Activa" : "Inactiva"}</td>
                 <td>
                   <Dropdown>
                     <Dropdown.Toggle variant="light" size="sm">
                       <i className="bi bi-three-dots"></i>
                     </Dropdown.Toggle>
-
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => abrirModalEditar(encuesta)}>
+                      <Dropdown.Item onClick={() => abrirModalEditar(e)}>
                         <i className="bi bi-pencil me-2"></i> Editar
                       </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => cambiarEstado(encuesta._id)}
-                      >
+                      <Dropdown.Item onClick={() => cambiarEstado(e._id)}>
                         <i className="bi bi-toggle-on me-2"></i>
-                        {encuesta.estado ? "Inactivar" : "Activar"}
+                        {e.estado ? "Inactivar" : "Activar"}
                       </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => eliminarEncuesta(encuesta._id)}
-                      >
+                      <Dropdown.Item onClick={() => eliminarEncuesta(e._id)}>
                         <i className="bi bi-trash me-2"></i> Eliminar
                       </Dropdown.Item>
                       <Dropdown.Divider />
                       <Dropdown.Item
                         onClick={() => {
-                          setEncuestaSeleccionada(encuesta._id);
+                          setEncuestaSeleccionada(e._id);
                           setMostrarModalGrafico(true);
                         }}
                       >
@@ -320,7 +267,7 @@ export default function EncuestasAdmin() {
                       </Dropdown.Item>
                       <Dropdown.Item
                         onClick={() => {
-                          setEncuestaSeleccionada(encuesta._id);
+                          setEncuestaSeleccionada(e._id);
                           setMostrarModalRespuestas(true);
                         }}
                       >
@@ -335,7 +282,7 @@ export default function EncuestasAdmin() {
         </Table>
       </div>
 
-      {/*Modal Crear/Editar*/}
+      {/* Modal Crear/Editar */}
       <Modal
         show={mostrarModal}
         onHide={() => {
@@ -350,12 +297,9 @@ export default function EncuestasAdmin() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {error && (
-            <Alert variant="danger" className="mt-2">
-              {error}
-            </Alert>
+          {errorFormulario && (
+            <Alert variant="danger">{errorFormulario}</Alert>
           )}
-
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Nombre</Form.Label>
@@ -363,10 +307,7 @@ export default function EncuestasAdmin() {
                 type="text"
                 value={encuestaActual.nombre}
                 onChange={(e) =>
-                  setEncuestaActual({
-                    ...encuestaActual,
-                    nombre: e.target.value,
-                  })
+                  setEncuestaActual({ ...encuestaActual, nombre: e.target.value })
                 }
               />
             </Form.Group>
@@ -376,20 +317,15 @@ export default function EncuestasAdmin() {
               <Form.Select
                 value={encuestaActual.categoria}
                 onChange={(e) =>
-                  setEncuestaActual({
-                    ...encuestaActual,
-                    categoria: e.target.value,
-                  })
+                  setEncuestaActual({ ...encuestaActual, categoria: e.target.value })
                 }
               >
                 <option value="">Seleccionar categoría</option>
-                {categorias
-                  .filter((c) => c.estado)
-                  .map((c) => (
-                    <option key={c._id} value={c.nombre}>
-                      {c.nombre}
-                    </option>
-                  ))}
+                {categorias.map((c) => (
+                  <option key={c._id} value={c.nombre}>
+                    {c.nombre}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
 
@@ -401,17 +337,13 @@ export default function EncuestasAdmin() {
                 placeholder="Descripción breve de la encuesta"
                 value={encuestaActual.descripcion || ""}
                 onChange={(e) =>
-                  setEncuestaActual({
-                    ...encuestaActual,
-                    descripcion: e.target.value,
-                  })
+                  setEncuestaActual({ ...encuestaActual, descripcion: e.target.value })
                 }
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Preguntas</Form.Label>
-
               {encuestaActual.preguntas.map((pregunta, index) => (
                 <div
                   key={index}
@@ -427,30 +359,19 @@ export default function EncuestasAdmin() {
                     onChange={(e) => {
                       const nuevas = [...encuestaActual.preguntas];
                       nuevas[index].pregunta = e.target.value;
-                      setEncuestaActual({
-                        ...encuestaActual,
-                        preguntas: nuevas,
-                      });
+                      setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
                     }}
                   />
-
                   <Form.Select
                     value={pregunta.tipo}
                     className="mb-2"
                     onChange={(e) => {
                       const nuevas = [...encuestaActual.preguntas];
                       nuevas[index].tipo = e.target.value;
-                      // Si es texto o escala, limpiamos opciones
-                      if (
-                        e.target.value === "texto" ||
-                        e.target.value === "escala"
-                      ) {
+                      if (e.target.value === "texto" || e.target.value === "escala") {
                         nuevas[index].opciones = [];
                       }
-                      setEncuestaActual({
-                        ...encuestaActual,
-                        preguntas: nuevas,
-                      });
+                      setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
                     }}
                   >
                     <option value="texto">Texto libre</option>
@@ -458,7 +379,6 @@ export default function EncuestasAdmin() {
                     <option value="opcionMultiple">Opción múltiple</option>
                     <option value="escala">Escala 0-10</option>
                   </Form.Select>
-
                   {(pregunta.tipo === "opcionUnica" ||
                     pregunta.tipo === "opcionMultiple") && (
                     <Form.Control
@@ -471,14 +391,10 @@ export default function EncuestasAdmin() {
                           .split(",")
                           .map((o) => o.trim())
                           .filter((o) => o !== "");
-                        setEncuestaActual({
-                          ...encuestaActual,
-                          preguntas: nuevas,
-                        });
+                        setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
                       }}
                     />
                   )}
-
                   <Button
                     variant="outline-danger"
                     size="sm"
@@ -486,10 +402,7 @@ export default function EncuestasAdmin() {
                     onClick={() => {
                       const nuevas = [...encuestaActual.preguntas];
                       nuevas.splice(index, 1);
-                      setEncuestaActual({
-                        ...encuestaActual,
-                        preguntas: nuevas,
-                      });
+                      setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
                     }}
                   >
                     Eliminar pregunta
@@ -512,15 +425,8 @@ export default function EncuestasAdmin() {
             >
               + Agregar pregunta
             </Button>
-
-            {errorFormulario && (
-              <Alert variant="danger" className="mt-2">
-                {errorFormulario}
-              </Alert>
-            )}
           </Form>
         </Modal.Body>
-
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setMostrarModal(false)}>
             Cancelar

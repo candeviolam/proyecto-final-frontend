@@ -4,7 +4,7 @@ import axios from "../services/api";
 import { Container, Form, Button, Alert, Spinner } from "react-bootstrap";
 import "../styles/global.css";
 
-const Encuesta = () => {
+export default function Encuesta() {
   const { id } = useParams();
   const [inicio, setInicio] = useState(false);
   const [encuesta, setEncuesta] = useState(null);
@@ -21,9 +21,8 @@ const Encuesta = () => {
     if (categoria === "Hábitos y Bienestar Personal") {
       if (nombreEncuesta.includes("Encuesta sobre bienestar personal")) {
         return "/fondo-bienestar.jpeg";
-      } else {
-        return "/fondo-pantallas.jpeg";
       }
+      return "/fondo-pantallas.jpeg";
     }
     if (categoria === "Música") return "/fondo-musica.jpeg";
     if (categoria === "Libros") return "/fondo-libros.jpeg";
@@ -33,20 +32,18 @@ const Encuesta = () => {
     return "/fondo-generico.jpg";
   };
 
-  //Función que quita "Encuesta de" o "Encuesta sobre" del título
   const limpiarTitulo = (nombre) => {
     if (!nombre) return "";
     const limpio = nombre.replace(/^Encuesta (de|sobre)\s*/i, "").trim();
     return limpio.charAt(0).toUpperCase() + limpio.slice(1);
   };
 
-  //Obtener encuesta al cargar la página
   useEffect(() => {
     const obtenerEncuesta = async () => {
       try {
-        const respuesta = await axios.get(`/encuesta/${id}`);
-        setEncuesta(respuesta.data);
-        setRespuestas(new Array(respuesta.data.preguntas.length).fill("")); //Inicializa respuestas vacías
+        const resp = await axios.get(`/encuesta/${id}`);
+        setEncuesta(resp.data);
+        setRespuestas(new Array(resp.data.preguntas.length).fill(""));
       } catch (err) {
         if (err.response?.status === 404) {
           setErrorCarga("La encuesta no existe o fue eliminada.");
@@ -57,11 +54,9 @@ const Encuesta = () => {
         setCargando(false);
       }
     };
-
     obtenerEncuesta();
   }, [id]);
 
-  //Manejar cambios en respuestas
   const manejarCambio = (index, valor) => {
     const nuevasRespuestas = [...respuestas];
     nuevasRespuestas[index] = valor;
@@ -70,24 +65,19 @@ const Encuesta = () => {
 
   const manejarCambioMultiple = (index, opcion) => {
     const seleccionadas = respuestas[index] || [];
-    let nuevasSeleccionadas;
-
+    let nuevas;
     if (seleccionadas.includes(opcion)) {
-      nuevasSeleccionadas = seleccionadas.filter((o) => o !== opcion);
+      nuevas = seleccionadas.filter((o) => o !== opcion);
     } else {
-      nuevasSeleccionadas = [...seleccionadas, opcion];
+      nuevas = [...seleccionadas, opcion];
     }
-
     const nuevasRespuestas = [...respuestas];
-    nuevasRespuestas[index] = nuevasSeleccionadas;
+    nuevasRespuestas[index] = nuevas;
     setRespuestas(nuevasRespuestas);
   };
 
-  //Enviar respuestas
   const manejarEnvio = async (e) => {
     e.preventDefault();
-
-    // Validar email si fue ingresado
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Por favor, ingresá un email válido.");
       return;
@@ -105,26 +95,23 @@ const Encuesta = () => {
       });
       setMensaje("¡Gracias por completar la encuesta!");
       setError("");
-    } catch (err) {
+    } catch {
       setError("Error al enviar respuestas");
       setMensaje("");
     }
   };
 
-  //Validar antes de pasar de pregunta
   const validarYAvanzar = () => {
     const resp = respuestas[preguntaActual];
-    const tipoPregunta = encuesta.preguntas[preguntaActual]?.tipo;
-
+    const tipo = encuesta.preguntas[preguntaActual]?.tipo;
     if (
-      (tipoPregunta === "texto" && (!resp || resp.trim() === "")) ||
-      (tipoPregunta === "opcionUnica" && !resp) ||
-      (tipoPregunta === "opcionMultiple" && (!resp || resp.length === 0))
+      (tipo === "texto" && (!resp || resp.trim() === "")) ||
+      (tipo === "opcionUnica" && !resp) ||
+      (tipo === "opcionMultiple" && (!resp || resp.length === 0))
     ) {
       setErrorValidacion("Por favor responder la pregunta antes de continuar.");
       return;
     }
-
     setErrorValidacion("");
     setPreguntaActual(preguntaActual + 1);
   };
@@ -170,7 +157,7 @@ const Encuesta = () => {
             onClick={() => setInicio(true)}
             className="boton-comenzar mt-3"
           >
-            Comenzar Encuesta
+            Comenzar encuesta
           </Button>
         </div>
       </div>
@@ -324,6 +311,4 @@ const Encuesta = () => {
       )}
     </div>
   );
-};
-
-export default Encuesta;
+}

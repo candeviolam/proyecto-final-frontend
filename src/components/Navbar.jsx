@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import ModalLogin from "./ModalLogin";
 import ModalRegistro from "./ModalRegistro";
@@ -15,9 +15,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
   };
 
   const collapseRef = useRef();
-
   const rol = localStorage.getItem("rol");
-  console.log("Rol actual:", rol);
 
   useEffect(() => {
     if (autenticado && collapseRef.current?.classList.contains("show")) {
@@ -33,7 +31,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
       <Container>
         <Navbar.Brand
           href="/"
-          syle={{ color: "var(--color-accent)", fontWeight: "bold" }}
+          style={{ color: "var(--color-accent)", fontWeight: "bold" }}
         >
           Encuestas Online
         </Navbar.Brand>
@@ -81,7 +79,6 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
         </Navbar.Collapse>
       </Container>
 
-      {/*Modal de Iniciar Sesión*/}
       <ModalLogin
         show={mostrarModalLogin}
         handleClose={() => setMostrarModalLogin(false)}
@@ -92,7 +89,6 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
         setAutenticado={setAutenticado}
       />
 
-      {/*Modal de Registro*/}
       <ModalRegistro
         show={mostrarModalRegistro}
         handleClose={() => setMostrarModalRegistro(false)}

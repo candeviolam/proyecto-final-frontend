@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import axios from "../services/api";
 
@@ -33,7 +33,6 @@ const ModalRegistro = ({ show, handleClose, setAutenticado }) => {
       setError("Debe aceptar los términos y condiciones");
       return false;
     }
-
     return true;
   };
 
@@ -42,7 +41,7 @@ const ModalRegistro = ({ show, handleClose, setAutenticado }) => {
     if (!validarCampos()) return;
 
     try {
-      const respuesta = await axios.post("/auth/register", {
+      await axios.post("/auth/register", {
         nombre,
         apellido,
         email,
@@ -117,17 +116,11 @@ const ModalRegistro = ({ show, handleClose, setAutenticado }) => {
             <Form.Label>Repetir contraseña</Form.Label>
             <Form.Control
               type={mostrarContraseña ? "text" : "password"}
-              placeholder="Repita se contraseña"
+              placeholder="Repita su contraseña"
               value={repetirContraseña}
               onChange={(e) => setRepetirContraseña(e.target.value)}
               required
             />
-            <Button
-              variant="link"
-              onClick={() => setMostrarContraseña(!mostrarContraseña)}
-            >
-              {mostrarContraseña ? "Ocultar" : "Mostrar"} contraseña
-            </Button>
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Check

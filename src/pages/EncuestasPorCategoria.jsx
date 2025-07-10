@@ -14,16 +14,14 @@ import "../styles/global.css";
 import "../styles/Home.css";
 
 export default function EncuestasPorCategoria() {
-  const { nombre } = useParams(); // obtiene la categoría de la URL
+  const { nombre } = useParams();
   const [encuestas, setEncuestas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [categoriaExiste, setCategoriaExiste] = useState(true);
 
-  // Capitalizar nombre
   const capitalizar = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1);
 
-  // Función que limpia el título
   const limpiarTitulo = (nombre) => {
     if (!nombre) return "";
     const limpio = nombre.replace(/^Encuesta (de|sobre)\s*/i, "").trim();
@@ -34,7 +32,6 @@ export default function EncuestasPorCategoria() {
     const obtener = async () => {
       setCargando(true);
       try {
-        // Primero traer todas las categorías activas
         const respCategorias = await axios.get("/categoria/obtener");
         const categoriasActivas = respCategorias.data.filter((c) => c.estado);
 
@@ -48,15 +45,15 @@ export default function EncuestasPorCategoria() {
           return;
         }
 
-        // Si existe, traer encuestas
         const respEncuestas = await axios.get("/encuesta/activas");
         const filtradas = respEncuestas.data.filter(
           (enc) => enc.categoria?.toLowerCase() === nombre.toLowerCase()
         );
+
         setEncuestas(filtradas);
         setError("");
         setCategoriaExiste(true);
-      } catch (err) {
+      } catch {
         setError("Error al obtener datos");
       } finally {
         setCargando(false);
