@@ -19,7 +19,8 @@ function App() {
   const [rol, setRol] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
       setAutenticado(true);
       const datosToken = JSON.parse(atob(token.split(".")[1]));

@@ -12,13 +12,15 @@ const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
     e.preventDefault();
     try {
       const respuesta = await axios.post("/auth/login", { email, contraseña });
-      localStorage.setItem("token", respuesta.data.token);
 
       const datosToken = JSON.parse(atob(respuesta.data.token.split(".")[1]));
-      localStorage.setItem("rol", datosToken.rol);
 
       if (recordarme) {
-        localStorage.setItem("recordarme", "true");
+        localStorage.setItem("token", respuesta.data.token);
+        localStorage.setItem("rol", datosToken.rol);
+      } else {
+        sessionStorage.setItem("token", respuesta.data.token);
+        sessionStorage.setItem("rol", datosToken.rol);
       }
 
       setAutenticado(true);
@@ -62,7 +64,7 @@ const ModalLogin = ({ show, handleClose, abrirRegistro, setAutenticado }) => {
           <Form.Group className="mb-3">
             <Form.Check
               type="checkbox"
-              label="Recuérdame"
+              label="Recordarme"
               checked={recordarme}
               onChange={(e) => setRecordarme(e.target.checked)}
             />
