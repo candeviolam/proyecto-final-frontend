@@ -38,44 +38,52 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ComponenteNavbar
-        autenticado={autenticado}
-        setAutenticado={setAutenticado}
-        rol={rol}
-      />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/encuesta/:id" element={<Encuesta />} />
-        <Route
-          path="/admin"
-          element={
-            <RutaProtegidaAdmin>
-              <Admin />
-            </RutaProtegidaAdmin>
-          }
+      <div className="layout-principal">
+        <ComponenteNavbar
+          autenticado={autenticado}
+          setAutenticado={setAutenticado}
+          rol={rol}
         />
-        <Route
-          path="/admin/encuestas"
-          element={
-            <RutaProtegidaAdmin>
-              <EncuestasAdmin />
-            </RutaProtegidaAdmin>
-          }
-        />
-        <Route
-          path="/admin/categorias"
-          element={
-            <RutaProtegidaAdmin>
-              <CategoriasAdmin />
-            </RutaProtegidaAdmin>
-          }
-        />
-        <Route path="/categoria/:nombre" element={<EncuestasPorCategoria />} />
-        <Route path="/todas" element={<TodasLasEncuestas />} />
-        <Route path="*" element={<Pagina404 />} />
-      </Routes>
 
-      <Footer />
+        <main className="contenido-principal">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/encuesta/:id" element={<Encuesta />} />
+            <Route
+              path="/admin"
+              element={
+                <RutaProtegidaAdmin>
+                  <Admin />
+                </RutaProtegidaAdmin>
+              }
+            />
+            <Route
+              path="/admin/encuestas"
+              element={
+                <RutaProtegidaAdmin>
+                  <EncuestasAdmin />
+                </RutaProtegidaAdmin>
+              }
+            />
+            <Route
+              path="/admin/categorias"
+              element={
+                <RutaProtegidaAdmin>
+                  <CategoriasAdmin />
+                </RutaProtegidaAdmin>
+              }
+            />
+            <Route
+              path="/categoria/:nombre"
+              element={<EncuestasPorCategoria />}
+            />
+            <Route path="/todas" element={<TodasLasEncuestas />} />
+            <Route path="*" element={<Pagina404 />} />
+          </Routes>
+        </main>
+
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }
