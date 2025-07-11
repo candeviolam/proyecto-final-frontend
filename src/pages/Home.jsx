@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Container, Button, Carousel } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "../services/api";
+import { obtenerImagenFondo } from "../utils/obtenerImagenFondo";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Home.css";
 import "../styles/global.css";
@@ -52,29 +53,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", manejarScroll);
   }, []);
 
-  const obtenerImagenFondo = (nombreEncuesta) => {
-    const nombre = nombreEncuesta?.toLowerCase() || "";
-    if (nombre.includes("bienestar")) return "/fondo-bienestar.jpeg";
-    if (nombre.includes("lectura")) return "/fondo-libros.jpeg";
-    if (nombre.includes("géneros literarios")) return "/fondo-libros.jpeg";
-    if (nombre.includes("música")) return "/fondo-musica.jpeg";
-    if (nombre.includes("conciertos")) return "/fondo-musica.jpeg";
-    if (nombre.includes("series") || nombre.includes("películas"))
-      return "/fondo-pantallas.jpeg";
-    if (nombre.includes("pasatiempos")) return "/fondo-estilo-vida.jpeg";
-    if (nombre.includes("viajes") || nombre.includes("turismo"))
-      return "/fondo-viajes.jpeg";
-    if (nombre.includes("tecnología")) return "/fondo-tecnologia.jpeg";
-    if (nombre.includes("medio ambiente")) return "/fondo-medio-ambiente.jpeg";
-    if (nombre.includes("universitaria")) return "/fondo-educacion.jpeg";
-    if (nombre.includes("deporte")) return "/fondo-deporte.jpeg";
-    if (nombre.includes("perros") || nombre.includes("gatos"))
-      return "/fondo-mascotas.jpeg";
-    if (nombre.includes("alimentación") || nombre.includes("recetas"))
-      return "/fondo-alimentacion.jpeg";
-    return "/fondo-generico.jpg";
-  };
-
   const limpiarTitulo = (nombre) => {
     if (!nombre) return "";
     const limpio = nombre.replace(/^Encuesta (de|sobre)\s*/i, "").trim();
@@ -115,9 +93,10 @@ export default function Home() {
                 <div
                   className="carousel-image"
                   style={{
-                    backgroundImage: `url(${obtenerImagenFondo(
-                      encuesta.nombre
-                    )})`,
+                    backgroundImage: `url(${obtenerImagenFondo({
+                      categoria: encuesta.categoria,
+                      nombreEncuesta: encuesta.nombre,
+                    })})`,
                   }}
                 ></div>
               </div>

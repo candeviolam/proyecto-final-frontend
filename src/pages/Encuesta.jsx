@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../services/api";
 import { Container, Form, Button, Alert, Spinner } from "react-bootstrap";
+import { obtenerImagenFondo } from "../utils/obtenerImagenFondo";
 import "../styles/global.css";
 
 export default function Encuesta() {
@@ -16,21 +17,6 @@ export default function Encuesta() {
   const [errorCarga, setErrorCarga] = useState("");
   const [errorValidacion, setErrorValidacion] = useState("");
   const [cargando, setCargando] = useState(true);
-
-  const obtenerImagenFondo = (categoria, nombreEncuesta) => {
-    if (categoria === "Hábitos y Bienestar Personal") {
-      if (nombreEncuesta.includes("Encuesta sobre bienestar personal")) {
-        return "/fondo-bienestar.jpeg";
-      }
-      return "/fondo-pantallas.jpeg";
-    }
-    if (categoria === "Música") return "/fondo-musica.jpeg";
-    if (categoria === "Libros") return "/fondo-libros.jpeg";
-    if (categoria === "Deporte") return "/fondo-deporte.jpeg";
-    if (categoria === "Mascotas") return "/fondo-mascotas.jpeg";
-    if (categoria === "Alimentación") return "/fondo-alimentacion.jpeg";
-    return "/fondo-generico.jpg";
-  };
 
   const limpiarTitulo = (nombre) => {
     if (!nombre) return "";
@@ -135,10 +121,10 @@ export default function Encuesta() {
       <div
         className="fondo-encuesta"
         style={{
-          backgroundImage: `url(${obtenerImagenFondo(
-            encuesta.categoria,
-            encuesta.nombre
-          )})`,
+          backgroundImage: `url(${obtenerImagenFondo({
+            categoria: encuesta.categoria,
+            nombreEncuesta: encuesta.nombre,
+          })})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "100vh",
@@ -168,10 +154,10 @@ export default function Encuesta() {
     <div
       className="fondo-encuesta"
       style={{
-        backgroundImage: `url(${obtenerImagenFondo(
-          encuesta.categoria,
-          encuesta.nombre
-        )})`,
+        backgroundImage: `url(${obtenerImagenFondo({
+          categoria: encuesta.categoria,
+          nombreEncuesta: encuesta.nombre,
+        })})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         minHeight: "100vh",
