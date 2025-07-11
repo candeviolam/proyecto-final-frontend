@@ -26,12 +26,13 @@ const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
   return (
     <Navbar
       expand="lg"
-      className="navbar-custom fixed top-0 left-0 w-full z-50 shadow-sm"
+      className="navbar-custom fixed top-0 left-0 w-full z-50 shadow-sm justify-content-between"
     >
-      <Container>
+      <Container fluid>
         <Navbar.Brand
           as={Link}
           to="/"
+          className="ms-5"
           style={{ color: "var(--color-accent)", fontWeight: "bold" }}
         >
           Encuestas Online
@@ -39,7 +40,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" ref={collapseRef}>
-          <Nav className="ms-auto">
+          <Nav className="ms-auto me-5">
             {rol === "admin" && (
               <Link
                 to="/admin"
