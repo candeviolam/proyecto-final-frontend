@@ -29,7 +29,8 @@ export default function EstadisticasAdmin() {
   useEffect(() => {
     const obtenerEstadisticas = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         const resp = await axios.get("/admin/estadisticas", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -50,7 +51,8 @@ export default function EstadisticasAdmin() {
     setCargandoRespuestas(true);
     setMostrarModalRespuestas(true);
     try {
-      const token = localStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       const resp = await axios.get("/admin/respuestas/ultimas", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -69,7 +71,8 @@ export default function EstadisticasAdmin() {
     setCargandoUsuarios(true);
     setMostrarModalUsuarios(true);
     try {
-      const token = localStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       const resp = await axios.get("/admin/usuarios", {
         headers: {
           Authorization: `Bearer ${token}`,

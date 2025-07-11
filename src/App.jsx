@@ -15,8 +15,8 @@ import "./styles/global.css";
 import "./styles/index.css";
 
 function App() {
-  const [autenticado, setAutenticado] = useState(false);
-  const [rol, setRol] = useState("");
+  const [autenticado, setAutenticado] = useState(null);
+  const [rol, setRol] = useState(null);
 
   useEffect(() => {
     const token =
@@ -25,8 +25,15 @@ function App() {
       setAutenticado(true);
       const datosToken = JSON.parse(atob(token.split(".")[1]));
       setRol(datosToken.rol);
+    } else {
+      setAutenticado(false);
+      setRol("");
     }
   }, []);
+
+  if (autenticado === null || rol === null) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <BrowserRouter>

@@ -18,9 +18,11 @@ export default function GraficoRespuestas() {
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         const resp = await axios.get("/encuesta/respuestas-por-dia", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         setData(resp.data);

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import ModalLogin from "./ModalLogin";
 import ModalRegistro from "./ModalRegistro";
 import "../styles/global.css";
@@ -29,18 +30,20 @@ const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
     >
       <Container>
         <Navbar.Brand
-          href="/"
+          as={Link}
+          to="/"
           style={{ color: "var(--color-accent)", fontWeight: "bold" }}
         >
           Encuestas Online
         </Navbar.Brand>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" ref={collapseRef}>
           <Nav className="ms-auto">
             {rol === "admin" && (
-              <Button
-                variant="outline-light"
-                href="/admin"
+              <Link
+                to="/admin"
+                className="btn btn-outline-light"
                 style={{
                   color: "var(--color-accent)",
                   borderColor: "var(--color-accent)",
@@ -48,7 +51,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
                 }}
               >
                 Panel Admin
-              </Button>
+              </Link>
             )}
 
             {autenticado ? (
