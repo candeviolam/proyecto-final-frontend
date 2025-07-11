@@ -4,7 +4,7 @@ import ModalLogin from "./ModalLogin";
 import ModalRegistro from "./ModalRegistro";
 import "../styles/global.css";
 
-const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
+const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
   const [mostrarModalLogin, setMostrarModalLogin] = useState(false);
   const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
 
@@ -15,7 +15,6 @@ const ComponenteNavbar = ({ autenticado, setAutenticado }) => {
   };
 
   const collapseRef = useRef();
-  const rol = localStorage.getItem("rol");
 
   useEffect(() => {
     if (autenticado && collapseRef.current?.classList.contains("show")) {

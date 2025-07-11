@@ -1,4 +1,3 @@
-// Componente principal
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Home from "./pages/Home";
@@ -17,11 +16,14 @@ import "./styles/index.css";
 
 function App() {
   const [autenticado, setAutenticado] = useState(false);
+  const [rol, setRol] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setAutenticado(true);
+      const datosToken = JSON.parse(atob(token.split(".")[1]));
+      setRol(datosToken.rol);
     }
   }, []);
 
@@ -30,6 +32,7 @@ function App() {
       <ComponenteNavbar
         autenticado={autenticado}
         setAutenticado={setAutenticado}
+        rol={rol}
       />
       <Routes>
         <Route path="/" element={<Home />} />
