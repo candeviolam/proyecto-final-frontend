@@ -86,8 +86,6 @@ export default function TodasLasEncuestas() {
             ))}
           </Row>
 
-          {/* Controles de paginación */}
-          {/* Controles de paginación */}
           <div className="d-flex justify-content-center mt-4 gap-2 flex-wrap">
             {paginaActual > 1 && (
               <button
