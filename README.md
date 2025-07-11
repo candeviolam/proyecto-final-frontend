@@ -58,13 +58,16 @@ La aplicación se ejecutará en http://localhost:5173 por defecto.
 
 ## Estructura del proyecto
 
+/public            Imágenes 
 /src
    /components     Componentes reutilizables
    /pages          Páginas principales
    /services       Configuración de Axios
    /styles         Hojas de estilos
-App.jsx            Rutas principales
-main.jsx           Punto de entrada
+   App.jsx         Rutas principales
+   main.jsx        Punto de entrada
+.env               Variables de entorno (URL de la API)
+index.html         HTML base de la aplicación
 
 ---
 
