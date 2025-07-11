@@ -52,22 +52,23 @@ Permitir a un administrador gestionar encuestas y a usuarios responderlas de for
 
 4. **Levantar/ejecutar la aplicación:**
    npm run dev
-La aplicación se ejecutará en http://localhost:5173 por defecto.
+   La aplicación se ejecutará en http://localhost:5173 por defecto.
 
 ---
 
 ## Estructura del proyecto
 
-/public            Imágenes 
+/public              Imágenes
 /src
-   /components     Componentes reutilizables
-   /pages          Páginas principales
-   /services       Configuración de Axios
-   /styles         Hojas de estilos
-   App.jsx         Rutas principales
-   main.jsx        Punto de entrada
-.env               Variables de entorno (URL de la API)
-index.html         HTML base de la aplicación
+   /components       Componentes reutilizables
+   /pages            Páginas principales
+   /services         Configuración de Axios
+   /styles           Hojas de estilos
+   /utils			       Funciones auxiliares
+   App.jsx           Rutas principales
+   main.jsx          Punto de entrada
+.env                 Variables de entorno (URL de la API)
+index.html           HTML base de la aplicación
 
 ---
 
@@ -80,7 +81,7 @@ Contraseña: superadmin123
 
 ## Enlaces
 
-Frontend: [URL_FRONTEND]
-Backend: [URL_BACKEND]
-Tablero Trello: [URL_TRELLO]
-Diseño Figma: [URL_FIGMA]
+Frontend: https://encuestas-online.netlify.app/
+Backend: https://encuestas-online.onrender.com
+Tablero Trello: https://trello.com/b/HGkI7SfI/trabajo-final-encuestas-online
+Diseño Figma: https://www.figma.com/design/d9pfdnP1MaTGFArkRtpuo9/Encuestas-Online?node-id=0-1&t=s4CW89JL9gWomPov-1
