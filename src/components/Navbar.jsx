@@ -5,7 +5,7 @@ import ModalLogin from "./ModalLogin";
 import ModalRegistro from "./ModalRegistro";
 import "../styles/global.css";
 
-const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
+const ComponenteNavbar = ({ autenticado, setAutenticado, rol, setRol }) => {
   const [mostrarModalLogin, setMostrarModalLogin] = useState(false);
   const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
 
@@ -17,6 +17,7 @@ const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
     localStorage.removeItem("rol");
     sessionStorage.removeItem("rol");
     setAutenticado(false);
+    setRol("");
     navigate("/");
   };
 

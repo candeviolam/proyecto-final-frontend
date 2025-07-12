@@ -43,6 +43,7 @@ function App() {
           autenticado={autenticado}
           setAutenticado={setAutenticado}
           rol={rol}
+          setRol={setRol}
         />
 
         <main className="contenido-principal">
