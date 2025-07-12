@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ModalLogin from "./ModalLogin";
 import ModalRegistro from "./ModalRegistro";
 import "../styles/global.css";
@@ -9,10 +9,15 @@ const ComponenteNavbar = ({ autenticado, setAutenticado, rol }) => {
   const [mostrarModalLogin, setMostrarModalLogin] = useState(false);
   const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
 
+  const navigate = useNavigate();
+
   const cerrarSesion = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    localStorage.removeItem("rol");
+    sessionStorage.removeItem("rol");
     setAutenticado(false);
-    window.location.reload();
+    navigate("/");
   };
 
   const collapseRef = useRef();
