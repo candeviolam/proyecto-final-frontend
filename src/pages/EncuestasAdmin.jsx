@@ -97,17 +97,15 @@ export default function EncuestasAdmin() {
           `/encuesta/modificar/${encuestaActual._id}`,
           encuestaActual,
           {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           }
         );
       } else {
-        await axios.post(
-          "/encuesta/crear",
-          encuestaActual,
-          {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }
-        );
+        await axios.post("/encuesta/crear", encuestaActual, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
       }
       setMostrarModal(false);
       setErrorFormulario("");
@@ -119,11 +117,13 @@ export default function EncuestasAdmin() {
 
   const cambiarEstado = async (id) => {
     try {
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       await axios.put(
         `/encuesta/estado/${id}`,
         {},
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       obtenerEncuestas();
@@ -133,7 +133,8 @@ export default function EncuestasAdmin() {
   };
 
   const eliminarEncuesta = async (id) => {
-    if (!window.confirm("¿Está seguro que desea eliminar esta encuesta?")) return;
+    if (!window.confirm("¿Está seguro que desea eliminar esta encuesta?"))
+      return;
     try {
       await axios.delete(`/encuesta/eliminar/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -297,9 +298,7 @@ export default function EncuestasAdmin() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {errorFormulario && (
-            <Alert variant="danger">{errorFormulario}</Alert>
-          )}
+          {errorFormulario && <Alert variant="danger">{errorFormulario}</Alert>}
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Nombre</Form.Label>
@@ -307,7 +306,10 @@ export default function EncuestasAdmin() {
                 type="text"
                 value={encuestaActual.nombre}
                 onChange={(e) =>
-                  setEncuestaActual({ ...encuestaActual, nombre: e.target.value })
+                  setEncuestaActual({
+                    ...encuestaActual,
+                    nombre: e.target.value,
+                  })
                 }
               />
             </Form.Group>
@@ -317,7 +319,10 @@ export default function EncuestasAdmin() {
               <Form.Select
                 value={encuestaActual.categoria}
                 onChange={(e) =>
-                  setEncuestaActual({ ...encuestaActual, categoria: e.target.value })
+                  setEncuestaActual({
+                    ...encuestaActual,
+                    categoria: e.target.value,
+                  })
                 }
               >
                 <option value="">Seleccionar categoría</option>
@@ -337,7 +342,10 @@ export default function EncuestasAdmin() {
                 placeholder="Descripción breve de la encuesta"
                 value={encuestaActual.descripcion || ""}
                 onChange={(e) =>
-                  setEncuestaActual({ ...encuestaActual, descripcion: e.target.value })
+                  setEncuestaActual({
+                    ...encuestaActual,
+                    descripcion: e.target.value,
+                  })
                 }
               />
             </Form.Group>
@@ -359,7 +367,10 @@ export default function EncuestasAdmin() {
                     onChange={(e) => {
                       const nuevas = [...encuestaActual.preguntas];
                       nuevas[index].pregunta = e.target.value;
-                      setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
+                      setEncuestaActual({
+                        ...encuestaActual,
+                        preguntas: nuevas,
+                      });
                     }}
                   />
                   <Form.Select
@@ -368,10 +379,16 @@ export default function EncuestasAdmin() {
                     onChange={(e) => {
                       const nuevas = [...encuestaActual.preguntas];
                       nuevas[index].tipo = e.target.value;
-                      if (e.target.value === "texto" || e.target.value === "escala") {
+                      if (
+                        e.target.value === "texto" ||
+                        e.target.value === "escala"
+                      ) {
                         nuevas[index].opciones = [];
                       }
-                      setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
+                      setEncuestaActual({
+                        ...encuestaActual,
+                        preguntas: nuevas,
+                      });
                     }}
                   >
                     <option value="texto">Texto libre</option>
@@ -391,7 +408,10 @@ export default function EncuestasAdmin() {
                           .split(",")
                           .map((o) => o.trim())
                           .filter((o) => o !== "");
-                        setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
+                        setEncuestaActual({
+                          ...encuestaActual,
+                          preguntas: nuevas,
+                        });
                       }}
                     />
                   )}
@@ -402,7 +422,10 @@ export default function EncuestasAdmin() {
                     onClick={() => {
                       const nuevas = [...encuestaActual.preguntas];
                       nuevas.splice(index, 1);
-                      setEncuestaActual({ ...encuestaActual, preguntas: nuevas });
+                      setEncuestaActual({
+                        ...encuestaActual,
+                        preguntas: nuevas,
+                      });
                     }}
                   >
                     Eliminar pregunta

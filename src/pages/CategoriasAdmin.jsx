@@ -84,11 +84,13 @@ export default function CategoriasAdmin() {
 
   const cambiarEstado = async (id) => {
     try {
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       await axios.put(
         `/categoria/estado/${id}`,
         {},
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       obtenerCategorias();

@@ -8,7 +8,6 @@ export default function RutaProtegidaAdmin({ children }) {
     return <Navigate to="/" />;
   }
 
-  // Decodificar el payload del token
   const datosToken = JSON.parse(atob(token.split(".")[1]));
   const rol = datosToken.rol;
 
