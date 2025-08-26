@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../services/api";
 import { Container, Form, Button, Alert, Spinner } from "react-bootstrap";
@@ -17,6 +17,8 @@ export default function Encuesta() {
   const [errorCarga, setErrorCarga] = useState("");
   const [errorValidacion, setErrorValidacion] = useState("");
   const [cargando, setCargando] = useState(true);
+
+  const emailRef = useRef(null);
 
   const limpiarTitulo = (nombre) => {
     if (!nombre) return "";
@@ -43,6 +45,20 @@ export default function Encuesta() {
     obtenerEncuesta();
   }, [id]);
 
+  useEffect(() => {
+    if (!encuesta) return;
+    const selector = `[data-preg="${preguntaActual}"] input, [data-preg="${preguntaActual}"] textarea, [data-preg="${preguntaActual}"] select`;
+    setTimeout(() => {
+      const el = document.querySelector(selector);
+      if (el) {
+        el.focus();
+        try {
+          el.select?.();
+        } catch {}
+      }
+    }, 0);
+  }, [preguntaActual, encuesta]);
+
   const manejarCambio = (index, valor) => {
     const nuevasRespuestas = [...respuestas];
     nuevasRespuestas[index] = valor;
@@ -62,8 +78,20 @@ export default function Encuesta() {
     setRespuestas(nuevasRespuestas);
   };
 
+  const esValidaRespuesta = (preg, valor) => {
+    const tipo = preg?.tipo;
+    if (tipo === "texto") return Boolean(valor && String(valor).trim() !== "");
+    if (tipo === "opcionUnica") return Boolean(valor);
+    if (tipo === "opcionMultiple")
+      return Array.isArray(valor) && valor.length > 0;
+    if (tipo === "escala")
+      return valor !== undefined && valor !== null && String(valor) !== "";
+    return true;
+  };
+
   const manejarEnvio = async (e) => {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
+
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Por favor, ingresá un email válido.");
       return;
@@ -88,29 +116,47 @@ export default function Encuesta() {
   };
 
   const validarYAvanzar = () => {
+    const preg = encuesta.preguntas[preguntaActual];
     const resp = respuestas[preguntaActual];
-    const tipo = encuesta.preguntas[preguntaActual]?.tipo;
-    if (
-      (tipo === "texto" && (!resp || resp.trim() === "")) ||
-      (tipo === "opcionUnica" && !resp) ||
-      (tipo === "opcionMultiple" && (!resp || resp.length === 0))
-    ) {
+
+    if (!esValidaRespuesta(preg, resp)) {
       setErrorValidacion("Por favor responder la pregunta antes de continuar.");
       return;
     }
+
     setErrorValidacion("");
-    setPreguntaActual(preguntaActual + 1);
+    setPreguntaActual((prev) => prev + 1);
   };
 
   const manejarEnter = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (preguntaActual < encuesta.preguntas.length - 1) {
-        validarYAvanzar();
-      } else {
-        manejarEnvio(e);
-      }
+    if (e.key !== "Enter") return;
+
+    e.preventDefault();
+    const lastIdx = encuesta.preguntas.length - 1;
+
+    if (preguntaActual < lastIdx) {
+      validarYAvanzar();
+      return;
     }
+
+    const preg = encuesta.preguntas[preguntaActual];
+    const resp = respuestas[preguntaActual];
+
+    if (!esValidaRespuesta(preg, resp)) {
+      setErrorValidacion(
+        "Por favor responder la pregunta antes de enviar la encuesta."
+      );
+      return;
+    }
+    setErrorValidacion("");
+
+    if (emailRef.current && document.activeElement !== emailRef.current) {
+      emailRef.current.focus();
+      emailRef.current.select?.();
+      return;
+    }
+
+    manejarEnvio();
   };
 
   if (cargando) return <Spinner animation="border" className="m-5" />;
@@ -190,6 +236,7 @@ export default function Encuesta() {
               {encuesta.preguntas.map((pregunta, index) => (
                 <div
                   key={index}
+                  data-preg={index}
                   style={{
                     opacity: index === preguntaActual ? 1 : 0.3,
                     pointerEvents: index === preguntaActual ? "auto" : "none",
@@ -265,6 +312,7 @@ export default function Encuesta() {
                     Email (opcional, para recibir tus respuestas)
                   </Form.Label>
                   <Form.Control
+                    ref={emailRef}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
