@@ -190,7 +190,10 @@ export default function EstadisticasAdmin() {
           {cargandoUsuarios ? (
             <Spinner animation="border" />
           ) : (
-            <TablaUsuariosRegistrados usuarios={usuarios} />
+            <TablaUsuariosRegistrados
+              usuarios={usuarios}
+              mostrarFecha={false}
+            />
           )}
         </Modal.Body>
       </Modal>

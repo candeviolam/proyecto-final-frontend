@@ -1,9 +1,14 @@
 import { Table } from "react-bootstrap";
 
-export default function TablaUsuariosRegistrados({ usuarios }) {
+export default function TablaUsuariosRegistrados({
+  usuarios,
+  mostrarFecha = false,
+}) {
   if (!usuarios || usuarios.length === 0) {
     return <p>No hay usuarios registrados.</p>;
   }
+
+  const mostrarColFecha = mostrarFecha && usuarios.some((u) => u?.createdAt);
 
   return (
     <Table striped bordered hover responsive>
@@ -12,7 +17,7 @@ export default function TablaUsuariosRegistrados({ usuarios }) {
           <th>Nombre</th>
           <th>Email</th>
           <th>Rol</th>
-          <th>Fecha de registro</th>
+          {mostrarColFecha && <th>Fecha de registro</th>}
         </tr>
       </thead>
       <tbody>
@@ -21,7 +26,13 @@ export default function TablaUsuariosRegistrados({ usuarios }) {
             <td>{u.nombre}</td>
             <td>{u.email}</td>
             <td>{u.rol}</td>
-            <td>{new Date(u.createdAt).toLocaleString()}</td>
+            {mostrarColFecha && (
+              <td>
+                {u.createdAt
+                  ? new Date(u.createdAt).toLocaleString("es-AR")
+                  : "-"}
+              </td>
+            )}
           </tr>
         ))}
       </tbody>
