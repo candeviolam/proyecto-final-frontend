@@ -21,6 +21,9 @@ export default function CategoriasAdmin() {
   const [categoriaActual, setCategoriaActual] = useState({ nombre: "" });
   const [errorFormulario, setErrorFormulario] = useState("");
 
+  const getToken = () =>
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+
   useEffect(() => {
     obtenerCategorias();
   }, []);
@@ -56,36 +59,44 @@ export default function CategoriasAdmin() {
       return;
     }
 
+    const token = getToken();
+    if (!token) {
+      setErrorFormulario(
+        "Debés iniciar sesión como administrador para continuar."
+      );
+      return;
+    }
+
     try {
       if (modoEdicion) {
         await axios.put(
           `/categoria/modificar/${categoriaActual._id}`,
-          categoriaActual,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+          { nombre: categoriaActual.nombre },
+          { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
-        await axios.post("/categoria/crear", categoriaActual, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        await axios.post(
+          "/categoria/crear",
+          { nombre: categoriaActual.nombre },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
       }
       setMostrarModal(false);
       setErrorFormulario("");
       obtenerCategorias();
     } catch (error) {
       const mensaje =
-        error.response?.data?.message || "Error al guardar la categoría";
+        error.response?.data?.message || "Error al guardar la categoría.";
       setErrorFormulario(mensaje);
     }
   };
 
   const cambiarEstado = async (id) => {
     try {
-      const token =
-        localStorage.getItem("token") || sessionStorage.getItem("token");
+      const token = getToken();
+      if (!token) throw new Error("Sin token");
       await axios.put(
         `/categoria/estado/${id}`,
         {},
@@ -95,7 +106,7 @@ export default function CategoriasAdmin() {
       );
       obtenerCategorias();
     } catch {
-      setError("Error al cambiar el estado de la categoría");
+      setError("Error al cambiar el estado de la categoría.");
     }
   };
 
@@ -103,8 +114,10 @@ export default function CategoriasAdmin() {
     if (!window.confirm("¿Está seguro que desea eliminar esta categoría?"))
       return;
     try {
+      const token = getToken();
+      if (!token) throw new Error("Sin token");
       await axios.delete(`/categoria/eliminar/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       obtenerCategorias();
     } catch {
