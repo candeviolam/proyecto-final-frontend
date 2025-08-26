@@ -54,9 +54,8 @@ export default function EstadisticasAdmin() {
       const token =
         localStorage.getItem("token") || sessionStorage.getItem("token");
       const resp = await axios.get("/admin/respuestas/ultimas", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
+        params: { _ts: Date.now() },
       });
       setRespuestas(resp.data);
     } catch (error) {
