@@ -73,7 +73,14 @@ export default function EncuestasAdmin() {
 
   const abrirModalEditar = (encuesta) => {
     setModoEdicion(true);
-    setEncuestaActual(encuesta);
+    setEncuestaActual({
+      ...encuesta,
+      preguntas: (encuesta.preguntas || []).map((p) => ({
+        ...p,
+        opciones: Array.isArray(p.opciones) ? p.opciones : [],
+        opcionesTexto: Array.isArray(p.opciones) ? p.opciones.join(", ") : "",
+      })),
+    });
     setMostrarModal(true);
   };
 
@@ -91,27 +98,48 @@ export default function EncuestasAdmin() {
       return;
     }
 
+    const paraEnviar = {
+      ...encuestaActual,
+      preguntas: (encuestaActual.preguntas || []).map((p) => ({
+        tipo: p.tipo,
+        pregunta: p.pregunta?.trim() || "",
+        opciones:
+          p.tipo === "opcionUnica" || p.tipo === "opcionMultiple"
+            ? Array.isArray(p.opciones)
+              ? p.opciones
+              : (p.opcionesTexto || "")
+                  .split(",")
+                  .map((o) => o.trim())
+                  .filter(Boolean)
+            : [],
+      })),
+    };
+
     try {
       if (modoEdicion) {
         await axios.put(
           `/encuesta/modificar/${encuestaActual._id}`,
-          encuestaActual,
+          paraEnviar,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${getToken()}`,
             },
           }
         );
       } else {
-        await axios.post("/encuesta/crear", encuestaActual, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        await axios.post("/encuesta/crear", paraEnviar, {
+          headers: { Authorization: `Bearer ${getToken()}` },
         });
       }
       setMostrarModal(false);
       setErrorFormulario("");
       obtenerEncuestas();
-    } catch {
-      setErrorFormulario("Error al guardar la encuesta.");
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.errors?.[0]?.msg ||
+        "Error al guardar la encuesta.";
+      setErrorFormulario(msg);
     }
   };
 
@@ -137,7 +165,7 @@ export default function EncuestasAdmin() {
       return;
     try {
       await axios.delete(`/encuesta/eliminar/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
       obtenerEncuestas();
     } catch {
@@ -177,6 +205,9 @@ export default function EncuestasAdmin() {
       (filtroEstado === "inactiva" && !e.estado);
     return coincideNombre && coincideCategoria && coincideEstado;
   });
+
+  const getToken = () =>
+    localStorage.getItem("token") || sessionStorage.getItem("token");
 
   return (
     <Container className="mt-5">
@@ -379,11 +410,20 @@ export default function EncuestasAdmin() {
                     onChange={(e) => {
                       const nuevas = [...encuestaActual.preguntas];
                       nuevas[index].tipo = e.target.value;
+
                       if (
                         e.target.value === "texto" ||
                         e.target.value === "escala"
                       ) {
                         nuevas[index].opciones = [];
+                        nuevas[index].opcionesTexto = "";
+                      } else {
+                        if (!Array.isArray(nuevas[index].opciones))
+                          nuevas[index].opciones = [];
+                        if (typeof nuevas[index].opcionesTexto !== "string") {
+                          nuevas[index].opcionesTexto =
+                            nuevas[index].opciones.join(", ");
+                        }
                       }
                       setEncuestaActual({
                         ...encuestaActual,
@@ -401,13 +441,30 @@ export default function EncuestasAdmin() {
                     <Form.Control
                       type="text"
                       placeholder="Opciones separadas por coma"
-                      value={pregunta.opciones.join(", ")}
+                      value={pregunta.opcionesTexto ?? ""}
                       onChange={(e) => {
                         const nuevas = [...encuestaActual.preguntas];
-                        nuevas[index].opciones = e.target.value
+                        nuevas[index] = {
+                          ...nuevas[index],
+                          opcionesTexto: e.target.value,
+                        };
+                        setEncuestaActual({
+                          ...encuestaActual,
+                          preguntas: nuevas,
+                        });
+                      }}
+                      onBlur={(e) => {
+                        const texto = e.target.value;
+                        const arr = texto
                           .split(",")
                           .map((o) => o.trim())
-                          .filter((o) => o !== "");
+                          .filter(Boolean);
+                        const nuevas = [...encuestaActual.preguntas];
+                        nuevas[index] = {
+                          ...nuevas[index],
+                          opciones: arr,
+                          opcionesTexto: texto,
+                        };
                         setEncuestaActual({
                           ...encuestaActual,
                           preguntas: nuevas,
@@ -441,7 +498,12 @@ export default function EncuestasAdmin() {
                   ...encuestaActual,
                   preguntas: [
                     ...encuestaActual.preguntas,
-                    { pregunta: "", tipo: "texto", opciones: [] },
+                    {
+                      pregunta: "",
+                      tipo: "texto",
+                      opciones: [],
+                      opcionesTexto: "",
+                    },
                   ],
                 })
               }
