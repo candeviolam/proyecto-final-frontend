@@ -17,6 +17,7 @@ export default function Encuesta() {
   const [errorCarga, setErrorCarga] = useState("");
   const [errorValidacion, setErrorValidacion] = useState("");
   const [cargando, setCargando] = useState(true);
+  const [bloquearSubmit, setBloquearSubmit] = useState(false);
 
   const emailRef = useRef(null);
 
@@ -97,6 +98,20 @@ export default function Encuesta() {
       return;
     }
 
+    for (let i = 0; i < encuesta.preguntas.length; i++) {
+      if (!esValidaRespuesta(encuesta.preguntas[i], respuestas[i])) {
+        setPreguntaActual(i);
+        setErrorValidacion(
+          "Por favor completá esta pregunta antes de continuar."
+        );
+        setTimeout(() => {
+          const selector = `[data-preg="${i}"] input, [data-preg="${i}"] textarea, [data-preg="${i}"] select`;
+          document.querySelector(selector)?.focus();
+        }, 0);
+        return;
+      }
+    }
+
     const respuestasFormateadas = encuesta.preguntas.map((preg, i) => ({
       pregunta: preg.pregunta,
       respuesta: respuestas[i] || "",
@@ -125,7 +140,9 @@ export default function Encuesta() {
     }
 
     setErrorValidacion("");
+    setBloquearSubmit(true);
     setPreguntaActual((prev) => prev + 1);
+    setTimeout(() => setBloquearSubmit(false), 150);
   };
 
   const manejarEnter = (e) => {
@@ -323,6 +340,7 @@ export default function Encuesta() {
 
               <div className="d-flex justify-content-between mt-4">
                 <Button
+                  type="button"
                   variant="secondary"
                   disabled={preguntaActual === 0}
                   onClick={() => setPreguntaActual(preguntaActual - 1)}
@@ -330,11 +348,19 @@ export default function Encuesta() {
                   Anterior
                 </Button>
                 {preguntaActual < encuesta.preguntas.length - 1 ? (
-                  <Button variant="primary" onClick={validarYAvanzar}>
+                  <Button
+                    type="button"
+                    variant="primary"
+                    onClick={validarYAvanzar}
+                  >
                     Siguiente
                   </Button>
                 ) : (
-                  <Button variant="success" type="submit">
+                  <Button
+                    variant="success"
+                    type="submit"
+                    disabled={bloquearSubmit}
+                  >
                     Enviar
                   </Button>
                 )}
