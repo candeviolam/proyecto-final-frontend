@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import "../styles/admin.css";
 
 export default function Admin() {
-  console.log("Estoy en /admin");
   return (
     <main className="admin-main">
       <nav className="menu-admin-horizontal">

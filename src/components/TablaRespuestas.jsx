@@ -11,11 +11,12 @@ export default function TablaRespuestas({ encuestaId, onClose }) {
   useEffect(() => {
     const fetchRespuestas = async () => {
       try {
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         const resp = await axios.get(`/encuesta/${encuestaId}/respuestas`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
+
         setRespuestas(resp.data);
       } catch (err) {
         console.error(err);

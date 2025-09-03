@@ -18,10 +18,10 @@ export default function GraficoRespuestasEncuesta({ encuestaId }) {
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         const resp = await axios.get(`/encuesta/${encuestaId}/respuestas`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         // Contar cuántas respuestas tiene cada pregunta
